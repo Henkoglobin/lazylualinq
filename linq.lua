@@ -444,7 +444,17 @@ function linq:count(predicate)
 
 		return count
 	else
+		local it = self()
+		local count = 0
 
+		repeat
+			local value, index = it()
+			if index then
+				count = count + 1
+			end
+		until index == nil
+
+		return count
 	end
 end
 
