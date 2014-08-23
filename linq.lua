@@ -399,7 +399,6 @@ function linq:concat(other)
 	return linq.factory(factory)
 end
 
-
 --[[
 		LINQ METAFUNCTIONS
   ]]
@@ -566,7 +565,6 @@ function linq:firstOr(predicate, defaultValue, defaultIndex)
 	end
 end
 
-
 -- Single function. Returns the one and only item (that matches the predicate) in the sequence.
 -- Throws an error if there are multiple (matching) items.
 function linq:single(predicate)
@@ -615,6 +613,128 @@ function linq:single(predicate)
 	end
 end
 
+-- SingleOrDefault function. Returns the one and only item (that matches the predicate) or the default values.
+-- Throws an error if there are multiple (matching) items.
+function linq:singleOr(predicate, defaultValue, defaultIndex)
+	-- Check if only two parameters (in this case, defaultValue and defaultIndex) were passed
+	if predicate ~= nil and defaultValue ~= nil and defaultIndex == nil then
+		defaultValue, defaultIndex = predicate, defaultValue
+		predicate = nil
+	end
+
+	if predicate then
+		if type(predicate) == "string" then
+			predicate = linq.lambda(predicate)
+		end
+
+		if type(predicate) ~= "function" then
+			error("First argument 'predicate' must be a function or lambda!", 2)
+		end
+
+		local it = self()
+		local foundVal, foundIndex
+
+		repeat
+			local value, index = it()
+			if index and predicate(value, index) then
+				if foundIndex then
+					error("Sequence contained multiple matching elements!", 2)
+				end
+				foundVal, foundIndex = value, index
+			end
+		until index == nil
+
+		if foundIndex == nil then
+			return defaultValue, defaultIndex
+		end
+
+		return foundVal, foundIndex
+	else
+		local it = self()
+		local value, index = it()
+
+		if index == nil then
+			return defaultValue, defaultIndex
+		end
+
+		local value2, index2 = it()
+		if index2 ~= nil then
+			error("Sequence contained multiple elements!", 2)
+		end
+
+		return value, index
+	end
+end
+
+-- Last function. Returns the last item (that matches the predicate).
+function linq:last(predicate)
+	if predicate ~= nil then
+		if type(predicate) == "string" then
+			predicate = linq.lambda(predicate)
+		end
+
+		if type(predicate) ~= "function" then
+			error("First argument 'predicate' must be a function or lambda!", 2)
+		end
+
+		local it = self()
+		local foundAny = false
+		local foundValue, foundIndex
+
+		repeat
+			local value, index = it()
+
+			if index ~= nil and predicate(value, index) then
+				foundAny = true
+				foundValue, foundIndex = value, index
+			end
+		until index == nil
+
+		if foundAny then
+			return foundValue, foundIndex
+		end
+
+		error("No items matched the predicate!", 2)
+	else
+		local it = self()
+
+		local value, index = it()
+
+		if index == nil then
+			error("Sequence was empty!", 2)
+		end
+
+		while index ~= nil do
+			value, index = it()
+		end
+
+		return value, index
+	end
+end
+
+-- LastOrDefault function. Returns the last item (that matches the predicate) or the default values.
+function linq:lastOr(predicate, defaultValue, defaultIndex)
+	if predicate ~= nil and defaultValue ~= nil and defaultIndex == nil then
+		defaultValue, defaultIndex = predicate, defaultValue
+		predicate = nil
+	end
+
+	if type(predicate) == "string" then
+		predicate = linq.lambda(predicate)
+	end
+
+	if predicate and type(predicate) ~= "function" then
+		error("First argument 'predicate' must be a function or lambda!", 2)
+	end
+
+	local ok, value, index = pcall(self.last, self, predicate)
+
+	if ok then
+		return value, index
+	else
+		return defaultValue, defaultIndex
+	end
+end
 
 -- ToArray function. Returns a table with all the entries of a sequence.
 -- This ignores the indices returned by the sequence and creates a
