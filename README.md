@@ -23,7 +23,7 @@ There are two ways to specify a string lambda. The first form, which can be seen
 Note that: 
 
 1. Parameters are always passed in the order value, key (except for the foreach operator).
-2. You may specify any number of parameters for a lambda function. However, only two parameters will ever be passed. As is common for Lua, you may specify less parameters than are actually passed.
+2. You may specify any number of parameters for a lambda function. However, only two parameters will ever be passed (except for selectMany). As is common for Lua, you may specify less parameters than are actually passed.
 3. If you do not need to specify parameter names, you can omit the first part of the string lambda as seen above.
 
 Supported Operators
