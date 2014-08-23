@@ -18,11 +18,11 @@ local function newTable()
 	return setmetatable({}, tablemt)
 end
 
-local function isLinq(obj)
+function linq.isLinq(obj)
 	return getmetatable(obj) and getmetatable(obj).__index == linq
 end
 
-local function lambda(expr)
+function linq.lambda(expr)
 	local args, rets = expr:match(LAMBDA_PATTERN)
 	local chunk, err
 
@@ -66,7 +66,7 @@ function linq.new(...)
 		local source = values[1]
 
 		if type(source) == "table" then
-			if isLinq(source) then
+			if linq.isLinq(source) then
 				return source
 			else
 				if source[1] then
@@ -262,7 +262,7 @@ end
 -- source for which predicate returns true.
 function linq:where(predicate)
 	if type(predicate) == "string" then
-		predicate = lambda(predicate)
+		predicate = linq.lambda(predicate)
 	end
 
 	if type(predicate) ~= "function" then
@@ -289,7 +289,7 @@ end
 -- The selector may change the key, the value, both or neither.
 function linq:select(selector)
 	if type(selector) == "string" then
-		selector = lambda(selector)
+		selector = linq.lambda(selector)
 	end
 
 	if type(selector) ~= "function" then
@@ -317,11 +317,11 @@ end
 --
 function linq:selectMany(collectionSelector, resultSelector)
 	if type(collectionSelector) == "string" then
-		collectionSelector = lambda(collectionSelector)
+		collectionSelector = linq.lambda(collectionSelector)
 	end
 
 	if type(resultSelector) == "string" then
-		resultSelector = lambda(resultSelector)
+		resultSelector = linq.lambda(resultSelector)
 	end
 
 	if type(collectionSelector) ~= "function" then
@@ -378,7 +378,7 @@ function linq:selectMany(collectionSelector, resultSelector)
 end
 
 function linq:concat(other)
-	if not isLinq(other) then
+	if not linq.isLinq(other) then
 		error("First argument 'other' must be a Linq object!", 2)
 	end
 
@@ -425,7 +425,7 @@ end
 function linq:count(predicate)
 	if predicate then
 		if type(predicate) == "string" then
-			predicate = lambda(predicate)
+			predicate = linq.lambda(predicate)
 		end
 
 		if type(predicate) ~= "function" then
@@ -462,7 +462,7 @@ end
 function linq:any(predicate)
 	if predicate then
 		if type(predicate) == "string" then
-			predicate = lambda(predicate)
+			predicate = linq.lambda(predicate)
 		end
 
 		if type(predicate) ~= "function" then
@@ -490,7 +490,7 @@ end
 -- All function. Returns true if all items match the predicate given.
 function linq:all(predicate)
 	if type(predicate) == "string" then
-		predicate = lambda(predicate)
+		predicate = linq.lambda(predicate)
 	end
 
 	if type(predicate) ~= "function" then
@@ -513,7 +513,7 @@ end
 function linq:first(predicate)
 	if predicate then
 		if type(predicate) == "string" then
-			predicate = lambda(predicate)
+			predicate = linq.lambda(predicate)
 		end
 
 		if type(predicate) ~= "function" then
@@ -558,7 +558,7 @@ end
 function linq:single(predicate)
 	if predicate then
 		if type(predicate) == "string" then
-			predicate = lambda(predicate)
+			predicate = linq.lambda(predicate)
 		end
 
 		if type(predicate) ~= "function" then
