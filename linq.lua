@@ -11,7 +11,6 @@ local LAMBDA_PATTERN = [[^%s*%(?(.-)%)?%s*=>%s*(.-)%s*$]]
 local RETURN_PATTERN = [[%b()]]
 local EMPTY_SEQUENCE	
 
-
 local tablemt = { __index = table }
 
 local function newTable()
@@ -363,7 +362,6 @@ function linq:selectMany(collectionSelector, resultSelector)
 				innerValue, innerIndex = innerIt()
 			end
 
-
 			if resultSelector then
 				local resultValue, resultIndex = resultSelector(outerValue, outerIndex, innerValue, innerIndex)
 				progress = progress + 1
@@ -524,7 +522,7 @@ function linq:first(predicate)
 
 		repeat
 			local value, index = it
-			if index and predicate(value, index) then
+			if index ~= nil and predicate(value, index) then
 				return value, index
 			end
 		until index == nil
@@ -542,7 +540,23 @@ function linq:first(predicate)
 	end
 end
 
+-- FirstOrDefault function. Returns the first item (that matches the predicate) or the default values.
 function linq:firstOr(predicate, defaultValue, defaultIndex)
+	-- Validate arguments: If only two arguments were passed, the predicate is empty.
+	if predicate ~= nil and defaultValue ~= nil and defaultIndex == nil then
+		defaultValue, defaultIndex = predicate, defaultValue
+		predicate = nil
+	end
+
+	if type(predicate) == "string" then
+		predicate = linq.lambda(predicate)
+	end
+
+	if predicate and type(predicate) ~= "function" then
+		error("First argument 'predicate' must be a function or lambda!", 2)
+	end
+
+	-- Call first and catch any errors
 	local ok, value, index = pcall(self.first, self, predicate)
 
 	if ok then
