@@ -494,7 +494,7 @@ function linq:all(predicate)
 	end
 
 	if type(predicate) ~= "function" then
-		error("First argument 'predicate' must be a function of lambda!", 2)
+		error("First argument 'predicate' must be a function or lambda!", 2)
 	end
 
 	local it = self()
