@@ -18,13 +18,22 @@ local sequence = linq.range(1, 10)
 sequence:where("v % 2 == 0"):foreach(print)
 ```
 
-There are two ways to specify a string lambda. The first form, which can be seen above, only specifies the return value(s). The function parameters can be accessed with the variables k (the key of the sequence) and v (the corresponding value). If you want to specify names for the parameters for clarity, you may use the lambda syntax: `(v, k) => v % 2 == 0`.
+There are two ways to specify a string lambda. The first form, which can be seen above, only specifies the return value(s). The function parameters can be accessed with the variables k (the key of the sequence) and v (the corresponding value). If you want to specify names for the parameters for clarity, you may use the lambda syntax: `(v, k) => (v % 2 == 0)`.
 
 Note that: 
 
 1. Parameters are always passed in the order value, key (except for the foreach operator).
 2. You may specify any number of parameters for a lambda function. However, only two parameters will ever be passed (except for selectMany). As is common for Lua, you may specify less parameters than are actually passed.
 3. If you do not need to specify parameter names, you can omit the first part of the string lambda as seen above.
+4. You may omit the parentheses that enclose the parameters as well as the return values. Thus, `v => v * 2` is as valid as `(v) => (v * 2)`.
+5. As is common in Lua, you may return any number of values from a lambda.
+
+If you should want to use lambdas for other uses than in LazyLuaLinq, you can use the `lambda` function:
+
+```lua
+local timesTwo = linq.lambda("v => v * 2")
+-- local function timesTwo(v) return v * 2 end
+```
 
 Supported Operators
 -------------------
