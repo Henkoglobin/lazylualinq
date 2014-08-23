@@ -55,3 +55,32 @@ seq:select(function(x) return x + 10 end):foreach(print)
 -- Test select operator with string lambda
 print("Testing select operator with string lambda...")
 seq:select("v - 10"):foreach(print)
+
+-- Test selectMany operator with anonymous function
+print("Testing selectMany operator with anonymous function...")
+seq = linq { "Banana", "Alpha", "Hello, World!" }
+seq:selectMany(function(x) return string.gmatch(x, "[aeiou]") end,
+			   function(x, k1, a, k2) return x .. ": " .. a end):foreach(print)
+
+-- Test selectMany operator with string lambda
+print("Testing selectMany operator with string lambda...")
+seq:selectMany([[ (word) => string.gmatch(word, "[^aeiou]") ]],
+			   [[ (word, k1, con, k2) => word .. ": " .. con ]]):foreach(print)
+
+-- Test concat operator
+print("Testing concat operator...")
+seq = linq.rep("Na", 5)
+seq:concat(linq("Batman!")):foreach(print)
+
+-- Test count function
+print("Testing count function...")
+print("Length of 'Na' sequence: " .. tostring(seq:count()))
+
+-- Test count function with anonymous function
+print("Testing count function with anonymous function...")
+seq = linq.range(1, 10)
+print("Number of odd numbers in [1, 10]: " .. tostring(seq:count(function(x) return x % 2 == 1 end)))
+
+-- Test count function with string lambda
+print("Testing count function with string lambda...")
+print("Number of even numbers in [1, 10]: " .. tostring(seq:count("v % 2 == 0")))
