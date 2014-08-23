@@ -7,7 +7,7 @@ setmetatable(linq, {
 	end
 })
 
-local LAMBDA_PATTERN = [[^%(?(.-)%)?%s*=>%s*(.-)$]]
+local LAMBDA_PATTERN = [[^%s*%(?(.-)%)?%s*=>%s*(.-)%s*$]]
 local RETURN_PATTERN = [[%b()]]
 local EMPTY_SEQUENCE	
 
