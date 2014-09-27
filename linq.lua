@@ -313,7 +313,7 @@ function linq:select(selector)
 	return linq.factory(factory)
 end
 
---
+-- SelectMany function. 
 function linq:selectMany(collectionSelector, resultSelector)
 	if type(collectionSelector) == "string" then
 		collectionSelector = linq.lambda(collectionSelector)
@@ -375,6 +375,46 @@ function linq:selectMany(collectionSelector, resultSelector)
 	return linq.factory(factory)
 end
 
+-- Reindex function. Normalizes the indices of the sequence to be purely numerical.
+function linq:reindex()
+	local function factory()
+		local it = self()
+		local index = 0
+		
+		return function()
+			local value = it()
+			
+			if value ~= nil then
+				index = index + 1
+				return value, index
+			end
+		end
+	end
+	
+	return linq.factory(factory)
+end
+
+-- NonNil function. Filters the sequence such that it only contains 
+-- non-nil values.
+function linq:nonNil()
+	local function factory()
+		local it = self()
+		
+		return function()
+			local value, index
+			
+			repeat
+				value, index = it()
+			until index == nil or value ~= nil
+			
+			return value, index
+		end
+	end
+	
+	return linq.factory(factory)
+end
+
+-- Concat function. Concatenates two sequences.
 function linq:concat(other)
 	if not linq.isLinq(other) then
 		error("First argument 'other' must be a Linq object!", 2)
