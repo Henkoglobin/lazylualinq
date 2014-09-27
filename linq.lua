@@ -375,6 +375,32 @@ function linq:selectMany(collectionSelector, resultSelector)
 	return linq.factory(factory)
 end
 
+-- DefaultIfEmpty function. Returns a single default value if the sequence does
+-- not contain any values.
+function linq:defaultIfEmpty(defaultValue, defaultIndex)
+	local function factory()
+		local it = self()
+		local returned = false
+		local foundAny = false
+
+		return function()
+			local value, index = it()
+			if index ~= nil then
+				foundAny = true
+				returned = true
+				return value, index
+			end
+
+			if not foundAny or not returned then
+				returned = true
+				return defaultValue, defaultIndex or 1
+			end
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 -- Reindex function. Normalizes the indices of the sequence to be purely numerical.
 function linq:reindex()
 	local function factory()
