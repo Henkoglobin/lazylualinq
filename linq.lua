@@ -802,6 +802,41 @@ function linq:lastOr(predicate, defaultValue, defaultIndex)
 	end
 end
 
+function linq:aggregate(func, seed, resultSelector)	
+	if type(func) == "string" then
+		func = linq.lambda(func)
+	end
+
+	if type(func) ~= "function" then
+		error("First argument 'func' must be a function or lambda!", 2)
+	end
+
+	if type(resultSelector) == "string" then
+		resultSelector = linq.lambda(resultSelector)
+	end
+
+	if resultSelector ~= nil and type(resultSelector) ~= "function" then
+		error("Third argument 'resultSelector' must be a function or lambda, if provided.")
+	end
+
+	local it = self()
+	local value, index
+
+	if seed == nil then
+		seed, index = it()
+	end
+
+	while true do
+		value, index = it()
+
+		if index == nil then break end
+
+		seed = func(seed, value)
+	end
+
+	return resultSelector and resultSelector(seed) or seed
+end
+
 -- ToArray function. Returns a table with all the entries of a sequence.
 -- This ignores the indices returned by the sequence and creates a
 -- numerical indixed table.
