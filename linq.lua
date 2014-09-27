@@ -802,6 +802,42 @@ function linq:lastOr(predicate, defaultValue, defaultIndex)
 	end
 end
 
+-- sequenceEquals function. Compares two sequences value-by-value.
+function linq:sequenceEquals(other, comparer)
+	if comparer == nil then
+		comparer = function(a, b) return a == b end
+	end
+
+	if type(comparer) == "string" then
+		comparer = linq.lambda(comparer)
+	end
+	
+	if type(comparer) ~= "function" then
+		error("Second argument 'comparer' must be a function or lambda!", 2)
+	end
+
+	other = linq(other)
+	
+	local it1 = self()
+	local it2 = other()
+	
+	local value1, index1
+	local value2, index2
+	
+	repeat
+		value1, index1 = it1()
+		value2, index2 = it2()
+		
+		if not comparer(value1, value2) then
+			return false
+		end
+	until index1 == nil or index2 == nil
+	
+	return index1 == index2
+end
+
+-- Aggregate function. Aggregates values in a sequence according to func,
+-- optionally starting with a seed. Optionally applies resultSelector afterwards.
 function linq:aggregate(func, seed, resultSelector)	
 	if type(func) == "string" then
 		func = linq.lambda(func)
@@ -820,20 +856,16 @@ function linq:aggregate(func, seed, resultSelector)
 	end
 
 	local it = self()
-	local value, index
+	local index
 
-	if seed == nil then
+	if seed == nil then	
 		seed, index = it()
 	end
 
-	while true do
-		value, index = it()
-
-		if index == nil then break end
-
+	for value in it do
 		seed = func(seed, value)
 	end
-
+	
 	return resultSelector and resultSelector(seed) or seed
 end
 
