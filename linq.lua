@@ -557,6 +557,30 @@ function linq:count(predicate)
 	end
 end
 
+function linq:sum(selector)
+	selector = selector or function(v, k) return v end
+
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda, if given!", 2)
+	end
+
+	local it = self()
+	local result = 0
+
+	repeat
+		local value, index = it()
+		if index then
+			result = result + selector(value, index)
+		end
+	until index == nil
+
+	return result
+end
+
 -- Any function. Returns true if there is an item (that matches the predicate) in the sequence.
 function linq:any(predicate)
 	if predicate then

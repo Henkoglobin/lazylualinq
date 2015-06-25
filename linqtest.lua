@@ -85,9 +85,12 @@ print("Number of odd numbers in [1, 10]: " .. tostring(seq:count(function(x) ret
 print("Testing count function with string lambda...")
 print("Number of even numbers in [1, 10]: " .. tostring(seq:count("v % 2 == 0")))
 
-local seq1 = linq.range(1, 4)
+local seq1 = linq.range(1, 5)
 local seq2 = linq.range(5, 5)
 
 local result = seq1:zip(seq2, "(v1, k1, v2, k2) => v1 * v2")
 result:foreach(print)
-print(result:sequenceEquals(linq(5, 12, 21, 32)))
+print(result:sequenceEquals(linq(5, 12, 21, 32, 45)))
+
+print(result:sum())
+print(result:sum() == 115)
