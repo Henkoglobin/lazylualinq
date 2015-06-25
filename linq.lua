@@ -375,6 +375,42 @@ function linq:selectMany(collectionSelector, resultSelector)
 	return linq.factory(factory)
 end
 
+function linq:zip(other, resultSelector)
+	if not linq.isLinq(other) then
+		error("First argument 'other' must be a Linq object!", 2)
+	end
+
+	if type(resultSelector) == "string" then
+		resultSelector = linq.lambda(resultSelector)
+	end
+
+	if type(resultSelector) ~= "function" then
+		error("Second argument 'resultSelector' must be a function or lambda!", 2)
+	end
+
+	local function factory()
+		local it1 = self()
+		local it2 = other()
+		local progress = 0
+
+		return function()
+			local value1, index1 = it1()
+			local value2, index2 = it2()
+
+			if index1 == nil or index2 == nil then
+				return
+			end
+
+			local resultValue, resultIndex = resultSelector(value1, index1, value2, index2)
+			progress = progress + 1
+
+			return resultValue, resultIndex or progress
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 -- DefaultIfEmpty function. Returns a single default value if the sequence does
 -- not contain any values.
 function linq:defaultIfEmpty(defaultValue, defaultIndex)
