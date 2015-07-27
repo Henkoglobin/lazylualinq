@@ -54,20 +54,13 @@ local function getOrderingFactory()
 		-- Correctness first: Let Lua do the actual sorting for us :)
 		table.sort(array, function(a, b) return comparer(a.value, b.value) == -1 end)
 
-		local next, tab, start = ipairs(array)
-		local cont = true
+		local progress = 0
 
 		return function()
-			if cont then
-				local key, value = next(tab, start)
-				if key == nil then
-					cont = false
-					return nil, nil
-				else
-					start = key
-				end
-
-				return value.value, value.key
+			progress = progress + 1
+			local pair = array[progress]
+			if pair ~= nil then
+				return pair.value, pair.key
 			else
 				return nil, nil
 			end
