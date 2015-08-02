@@ -431,7 +431,7 @@ function linq:orderByDescending(selector, comparer)
 end
 
 function linq:thenBy(selector, comparer)
-	if self.source == nil then
+	if self.source == nil or self.comparer == nil or self.selector == nil then
 		error("Cannot add a second ordering to an unordered sequence!", 2)
 	end
 
@@ -462,7 +462,7 @@ function linq:thenBy(selector, comparer)
 end
 
 function linq:thenByDescending(selector, comparer)
-	if self.source == nil then
+	if self.source == nil or self.comparer == nil or self.selector == nil then
 		error("Cannot add a second ordering to an unordered sequence!", 2)
 	end
 
