@@ -21,10 +21,10 @@ local function getReverseComparer(comparerFunc)
 end
 
 local function getCompositeSelector(primarySelector, secondarySelector)
-	return function(element)
+	return function(element, key)
 		return {
-			primary = primarySelector(element),
-			secondary = secondarySelector(element)
+			primary = primarySelector(element, key),
+			secondary = secondarySelector(element, key)
 		}
 	end
 end
@@ -90,7 +90,7 @@ local function getOrderingFactory()
 		local keys = {}
 		for i = 1, #array do
 			indices[i] = i
-			keys[i] = selector(array[i].value)
+			keys[i] = selector(array[i].value, array[i].key)
 		end
 
 		quicksort(indices, keys, 1, #keys, comparer)
