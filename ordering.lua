@@ -41,6 +41,40 @@ local function getCompositeComparer(primaryComparer, secondaryComparer)
 	end
 end
 
+local function partition(indices, keys, left, right, pivot, comparer)
+	local pivotIndex = indices[pivot]
+	local pivotKey = keys[pivotIndex]
+
+	indices[pivot] = indices[right]
+	indices[right] = pivotIndex
+	local storeIndex = left
+	for i = left, right do
+		local candidateIndex = indices[i]
+		local candidateKey = keys[candidateIndex]
+		local comparison = comparer(candidateKey, pivotKey)
+		if comparison < 0 or (comparison == 0 and candidateIndex < pivotIndex) then
+			indices[i] = indices[storeIndex]
+			indices[storeIndex] = candidateIndex
+			storeIndex = storeIndex + 1
+		end
+	end
+
+	local tmp = indices[storeIndex]
+	indices[storeIndex] = indices[right]
+	indices[right] = tmp
+
+	return storeIndex
+end
+
+local function quicksort(indices, keys, left, right, comparer)
+	if right > left then
+		local pivot = math.floor((right + left) / 2)
+		local pivotPosition = partition(indices, keys, left, right, pivot, comparer)
+		quicksort(indices, keys, left, pivotPosition - 1, comparer)
+		quicksort(indices, keys, pivotPosition + 1, right, comparer)
+	end
+end
+
 local function getOrderingFactory()
 	return function(me)
 		local comparer = me.comparer
@@ -48,18 +82,24 @@ local function getOrderingFactory()
 
 		local array = me.source:select(
 			function(v, k)
-				return { key = k, value = v, compositeKey = me.selector(v) }
+				return { key = k, value = v }
 			end)
 			:toArray()
 
-		-- Correctness first: Let Lua do the actual sorting for us :)
-		table.sort(array, function(a, b) return comparer(a.compositeKey, b.compositeKey) == -1 end)
+		local indices = {}
+		local keys = {}
+		for i = 1, #array do
+			indices[i] = i
+			keys[i] = selector(array[i].value)
+		end
+
+		quicksort(indices, keys, 1, #keys, comparer)
 
 		local progress = 0
 
 		return function()
 			progress = progress + 1
-			local pair = array[progress]
+			local pair = array[indices[progress]]
 			if pair ~= nil then
 				return pair.value, pair.key
 			else
