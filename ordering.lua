@@ -14,45 +14,46 @@ local function getDefaultComparer()
 	end
 end
 
-local function getProjectionComparer(selector, comparer)
-	return function(a, b)
-		local keyA = selector(a)
-		local keyB = selector(b)
-
-		return comparer(keyA, keyB)
-	end
-end
-
 local function getReverseComparer(comparerFunc)
 	return function(a, b)
 		return comparerFunc(b, a)
 	end
 end
 
-local function getCompoundComparer(primary, secondary)
-	return function(a, b)
-		local result = primary(a, b)
+local function getCompositeSelector(primarySelector, secondarySelector)
+	return function(element)
+		return {
+			primary = primarySelector(element),
+			secondary = secondarySelector(element)
+		}
+	end
+end
 
-		if result == 0 then
-			result = secondary(a, b)
+local function getCompositeComparer(primaryComparer, secondaryComparer)
+	return function(a, b)
+		local primaryResult = primaryComparer(a.primary, b.primary)
+
+		if primaryResult ~= 0 then 
+			return primaryResult 
 		end
 
-		return result
+		return secondaryComparer(a.secondary, b.secondary)
 	end
 end
 
 local function getOrderingFactory()
 	return function(me)
 		local comparer = me.comparer
+		local selector = me.selector
 
 		local array = me.source:select(
 			function(v, k)
-				return { key = k, value = v }
+				return { key = k, value = v, compositeKey = me.selector(v) }
 			end)
 			:toArray()
 
 		-- Correctness first: Let Lua do the actual sorting for us :)
-		table.sort(array, function(a, b) return comparer(a.value, b.value) == -1 end)
+		table.sort(array, function(a, b) return comparer(a.compositeKey, b.compositeKey) == -1 end)
 
 		local progress = 0
 
@@ -70,8 +71,8 @@ end
 
 return {
 	getDefaultComparer = getDefaultComparer,
-	getProjectionComparer = getProjectionComparer,
 	getReverseComparer = getReverseComparer,
-	getCompoundComparer = getCompoundComparer,
-	getOrderingFactory = getOrderingFactory
+	getOrderingFactory = getOrderingFactory,
+	getCompositeComparer = getCompositeComparer,
+	getCompositeSelector = getCompositeSelector
 }

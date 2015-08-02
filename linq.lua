@@ -397,8 +397,8 @@ function linq:orderBy(selector, comparer)
 	local result = linq.factory(ordering.getOrderingFactory(self))
 
 	result.source = self
-	result.comparer = ordering.getProjectionComparer(selector, comparer or ordering.getDefaultComparer())
-	result.func = "orderby"
+	result.comparer = comparer or ordering.getDefaultComparer()
+	result.selector = selector
 
 	return result
 end
@@ -423,8 +423,9 @@ function linq:orderByDescending(selector, comparer)
 	local result = linq.factory(ordering.getOrderingFactory(self))
 
 	result.source = self
-	local innerComparer = ordering.getProjectionComparer(selector, comparer or ordering.getDefaultComparer())
+	local innerComparer = comparer or ordering.getDefaultComparer()
 	result.comparer = ordering.getReverseComparer(innerComparer)
+	result.selector = selector
 
 	return result
 end
@@ -453,9 +454,9 @@ function linq:thenBy(selector, comparer)
 	local result = linq.factory(ordering.getOrderingFactory())
 
 	result.source = self.source
-	local newComparer = ordering.getProjectionComparer(selector, comparer or ordering.getDefaultComparer())
-	result.comparer = ordering.getCompoundComparer(self.comparer, newComparer)
-	result.func = "thenBy"
+	local innerComparer = comparer or ordering.getDefaultComparer()
+	result.comparer = ordering.getCompositeComparer(self.comparer, innerComparer)
+	result.selector = ordering.getCompositeSelector(self.selector, selector)
 
 	return result
 end
@@ -484,9 +485,10 @@ function linq:thenByDescending(selector, comparer)
 	local result = linq.factory(ordering.getOrderingFactory())
 
 	result.source = self.source
-	local newComparer = ordering.getProjectionComparer(selector, comparer or ordering.getDefaultComparer())
-	local innerComparer = ordering.getReverseComparer(newComparer)
-	result.comparer = ordering.getCompoundComparer(self.comparer, innerComparer)
+	local innerComparer = comparer or ordering.getDefaultComparer()
+	local reverseComparer = ordering.getReverseComparer(innerComparer)
+	result.comparer = ordering.getCompositeComparer(self.comparer, reverseComparer)
+	result.selector = ordering.getCompositeSelector(self.selector, selector)
 
 	return result
 end
