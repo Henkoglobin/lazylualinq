@@ -935,11 +935,13 @@ end
 function linq:toArray()
 	local it = self()
 	local t = newTable()
+	local progress = 0
 
 	repeat
 		local value, index = it()
 		if index then
-			table.insert(t, value)
+			progress = progress + 1
+			t[progress] = value
 		end
 	until index == nil
 
