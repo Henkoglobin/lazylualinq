@@ -1,3 +1,5 @@
+local ordering = require("ordering")
+
 local linq = {}
 
 linq.__index = linq
@@ -373,6 +375,122 @@ function linq:selectMany(collectionSelector, resultSelector)
 	end
 
 	return linq.factory(factory)
+end
+
+function linq:orderBy(selector, comparer)
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda!", 2)
+	end
+
+	if type(comparer) == "string" then
+		comparer = linq.lambda(comparer)
+	end
+
+	if comparer ~= nil and type(comparer) ~= "function" then
+		error("Second argument 'comparer' must be a function or lambda, if provided!", 2)
+	end
+
+	local result = linq.factory(ordering.getOrderingFactory(self))
+
+	result.source = self
+	result.comparer = comparer or ordering.getDefaultComparer()
+	result.selector = selector
+
+	return result
+end
+
+function linq:orderByDescending(selector, comparer)
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda!", 2)
+	end
+
+	if type(comparer) == "string" then
+		comparer = linq.lambda(comparer)
+	end
+
+	if comparer ~= nil and type(comparer) ~= "function" then
+		error("Second argument 'comparer' must be a function or lambda, if provided!", 2)
+	end
+
+	local result = linq.factory(ordering.getOrderingFactory(self))
+
+	result.source = self
+	local innerComparer = comparer or ordering.getDefaultComparer()
+	result.comparer = ordering.getReverseComparer(innerComparer)
+	result.selector = selector
+
+	return result
+end
+
+function linq:thenBy(selector, comparer)
+	if self.source == nil or self.comparer == nil or self.selector == nil then
+		error("Cannot add a second ordering to an unordered sequence!", 2)
+	end
+
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda!", 2)
+	end
+
+	if type(comparer) == "string" then
+		comparer = linq.lambda(comparer)
+	end
+
+	if comparer ~= nil and type(comparer) ~= "function" then
+		error("Second argument 'comparer' must be a function or lambda, if provided!", 2)
+	end
+
+	local result = linq.factory(ordering.getOrderingFactory())
+
+	result.source = self.source
+	local innerComparer = comparer or ordering.getDefaultComparer()
+	result.comparer = ordering.getCompositeComparer(self.comparer, innerComparer)
+	result.selector = ordering.getCompositeSelector(self.selector, selector)
+
+	return result
+end
+
+function linq:thenByDescending(selector, comparer)
+	if self.source == nil or self.comparer == nil or self.selector == nil then
+		error("Cannot add a second ordering to an unordered sequence!", 2)
+	end
+
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda!", 2)
+	end
+
+	if type(comparer) == "string" then
+		comparer = linq.lambda(comparer)
+	end
+
+	if comparer ~= nil and type(comparer) ~= "function" then
+		error("Second argument 'comparer' must be a function or lambda, if provided!", 2)
+	end
+
+	local result = linq.factory(ordering.getOrderingFactory())
+
+	result.source = self.source
+	local innerComparer = comparer or ordering.getDefaultComparer()
+	local reverseComparer = ordering.getReverseComparer(innerComparer)
+	result.comparer = ordering.getCompositeComparer(self.comparer, reverseComparer)
+	result.selector = ordering.getCompositeSelector(self.selector, selector)
+
+	return result
 end
 
 function linq:zip(other, resultSelector)
