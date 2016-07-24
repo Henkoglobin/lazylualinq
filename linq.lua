@@ -1,4 +1,4 @@
-local ordering = require("ordering")
+local ordering = require((select(1, ...):match(".+%.") or "") .. "ordering")
 
 local linq = {}
 
