@@ -638,6 +638,36 @@ end
 		LINQ SCALAR FUNCTIONS
   ]]
 
+function linq:aggregate(seed, selector)
+	local NULL = {}
+	if seed and not selector then
+		seed, selector = {}, seed
+	end
+	
+	if type(selector) == "string" then
+		selector = linq.lambda("selector")
+	end
+	
+	if type(selector) ~= "string" then
+		error("Parameter 'selector' must be a function or lambda!", 2)
+	end
+	
+	local it = self()
+	repeat
+		local value, index = it()
+		
+		if index then
+			if seed == NULL then
+				seed = value
+			else
+				seed = selector(seed, value)
+			end
+		end
+	until index == nil
+	
+	return seed
+end
+
 -- Count function. Returns the number of entries in a sequence.
 function linq:count(predicate)
 	if predicate then
@@ -697,6 +727,34 @@ function linq:sum(selector)
 	until index == nil
 
 	return result
+end
+
+function linq:max(selector)
+	selector = selector or function(v, k) return v end
+	
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+	
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda, if given!", 2)
+	end
+	
+	return self:aggregate(function(seed, value) return math.max(seed, selector(value)) end)
+end
+
+function linq:min(selector)
+	selector = selector or function(v, k) return v end
+	
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+	
+	if type(selector) ~= "function" then
+		error("First argument 'selector' must be a function or lambda, if given!", 2)
+	end
+	
+	return self:aggregate(function(seed, value) return math.min(seed, selector(value)) end)
 end
 
 -- Any function. Returns true if there is an item (that matches the predicate) in the sequence.
