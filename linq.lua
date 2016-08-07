@@ -1141,6 +1141,15 @@ function linq:toTable()
 	return t
 end
 
+-- Syntax salt for a call to a sequence.
+-- Useful when iterating over a sequence:
+--     `for val, idx in from(something):where(...):getIterator() do`
+-- This is more expressive than the alternative:
+--     `for val, idx in from(something):where(...)() do`
+function linq:getIterator()
+	return self()
+end
+
 -- Calls the provided function for every entry in a sequence.
 -- Other than with all other functions, the function will
 -- receive the index first. This allows for a quite pretty output
