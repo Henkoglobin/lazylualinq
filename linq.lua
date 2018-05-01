@@ -493,6 +493,37 @@ function linq:thenByDescending(selector, comparer)
 	return result
 end
 
+function linq:unique()
+	return self:uniqueBy(function(x) return x end)
+end
+
+function linq:uniqueBy(selector)
+	if type(selector) == "string" then
+		selector = linq.lambda(selector)
+	end
+
+	local function factory()
+		local it = self()
+		local seen = {}
+
+		return function()
+			local value, index, key
+			repeat
+				value, index = it()
+				key = selector(value)
+			until index == nil or not seen[key]
+
+			if key ~= nil then
+				seen[key] = true
+			end
+
+			return value, index
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:zip(other, resultSelector)
 	if not linq.isLinq(other) then
 		error("First argument 'other' must be a Linq object!", 2)
