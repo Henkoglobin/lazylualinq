@@ -23,6 +23,10 @@ function linq.isLinq(obj)
 	return getmetatable(obj) and getmetatable(obj).__index == linq
 end
 
+local loadstring = loadstring or load or function()
+	error("Neither loadstring nor load are defined!")
+end
+
 function linq.lambda(expr)
 	local args, rets = expr:match(LAMBDA_PATTERN)
 	local chunk, err
