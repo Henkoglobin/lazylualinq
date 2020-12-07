@@ -857,7 +857,7 @@ function linq:first(predicate)
 		local it = self()
 
 		repeat
-			local value, index = it
+			local value, index = it()
 			if index ~= nil and predicate(value, index) then
 				return value, index
 			end
