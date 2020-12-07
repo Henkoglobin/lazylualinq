@@ -676,14 +676,14 @@ end
 function linq:aggregate(seed, selector)
 	local NULL = {}
 	if seed and not selector then
-		seed, selector = {}, seed
+		seed, selector = NULL, seed
 	end
 	
 	if type(selector) == "string" then
-		selector = linq.lambda("selector")
+		selector = linq.lambda(selector)
 	end
 	
-	if type(selector) ~= "string" then
+	if type(selector) ~= "function" then
 		error("Parameter 'selector' must be a function or lambda!", 2)
 	end
 	
@@ -1105,39 +1105,6 @@ function linq:sequenceEquals(other, comparer)
 	until index1 == nil or index2 == nil
 	
 	return index1 == index2
-end
-
--- Aggregate function. Aggregates values in a sequence according to func,
--- optionally starting with a seed. Optionally applies resultSelector afterwards.
-function linq:aggregate(func, seed, resultSelector)	
-	if type(func) == "string" then
-		func = linq.lambda(func)
-	end
-
-	if type(func) ~= "function" then
-		error("First argument 'func' must be a function or lambda!", 2)
-	end
-
-	if type(resultSelector) == "string" then
-		resultSelector = linq.lambda(resultSelector)
-	end
-
-	if resultSelector ~= nil and type(resultSelector) ~= "function" then
-		error("Third argument 'resultSelector' must be a function or lambda, if provided.")
-	end
-
-	local it = self()
-	local index
-
-	if seed == nil then	
-		seed, index = it()
-	end
-
-	for value in it do
-		seed = func(seed, value)
-	end
-	
-	return resultSelector and resultSelector(seed) or seed
 end
 
 -- ToArray function. Returns a table with all the entries of a sequence.
