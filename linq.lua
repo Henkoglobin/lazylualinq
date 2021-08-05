@@ -57,6 +57,10 @@ end
 		LINQ CONSTRUCTORS
   ]]
 
+function linq.from(...)
+	return linq.new(...)
+end
+
 -- General constructor (`from`). Tries to guess the user's intentions.
 function linq.new(...)
 	local values = {...}
