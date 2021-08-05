@@ -36,7 +36,7 @@ In order to understand how to effectively work with LazyLuaLinq, you should at l
 
 - __`linq`__. While you can use any name you wish to import the LazyLuaLinq module (via `local linq = require("lazylualinq")`), we'll assume that the name used is `linq`.
 - __Sequences__. All operations that LazyLuaLinq implements are performed on sequences. If you're familiar with C#'s Linq, a sequence is functionally equivalent to an `IEnumerable<T>` (or Java's `Stream<T>`). This document may refer to sequences by other names, such as `streams` or `iterables`.
-    - As an implementation detail, _sequences_ in LazyLuaLinq are just empty tables with a metatable whose `__index` is set to `linq`. If you need to check whether something is a sequence, you can conveniently use `linq.isLinq(something)` for that, so you should never really have to inspect the metatable yourself.
+    - As an implementation detail, _sequences_ in LazyLuaLinq are just (usually) empty tables with a metatable whose `__index` is set to `linq`. If you need to check whether `something` is a sequence, you can conveniently use `linq.isLinq(something)` for that, so you should never really have to inspect the metatable yourself.
 - __Lazy evaluation__. LazyLuaLinq will iterate sequences _lazily_, i.e. it will only advance on a sequence if strictly necessary. Note that some operators do require full evaluation of the whole sequence.
 - __String Lambdas__. LazyLuaLinq makes heavy use of anonymous functions, as they are required to pass transformation logic to the operators. Some languages, such as C#, have a shorter form to specify simple anonymous functions, called lambdas: 
 
@@ -100,7 +100,30 @@ Constructors are methods that produce a sequence of values on which other operat
 
 ## Terminal Functions
 
+### `linq:aggregate`
+### `linq:count`
+### `linq:sum`
+### `linq:max`
+### `linq:min`
+### `linq:any`
+### `linq:all`
+### `linq:first`
+### `linq:firstOr`
+### `linq:single`
+### `linq:singleOr`
+### `linq:last`
+### `linq:lastOr`
+### `linq:sequenceEquals`
+### `linq:toArray`
+### `linq:toTable`
+### `linq:getIterator`
+### `linq:foreach`
+
 ## Metafunctions
+
+### `__index` (`sequence[index]`)
+### `__len` (`#sequence`)
+### `__concat` (`seqA .. seqB`)
 
 ## String Lambdas
 
