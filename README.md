@@ -52,15 +52,15 @@ In order to understand how to effectively work with LazyLuaLinq, you should at l
 
     To learn more about this feature, check out [String Lambdas](#string-lambdas).
 
-# Supported Operators [#](#supported-operators)
+# Supported Operators
 
 There are three major categories of functions (or operators) in lazylualinq: Constructors (functions that create a sequence of values from some kind of source), intermediate functions (that perform some kind of transformative operation on a sequence, such as filtering or projections) and terminal functions (which also perform a transformative operation on a sequence, but return a value that's _not_ a sequence). 
 
-## Constructors [#](#constructors)
+## Constructors
 
 Constructors are methods that produce a sequence of values on which other operations can then be performed. 
 
-### `linq.new` [#](#linq.new)
+### `linq.new`
 
 `linq.new(...)`, also available simply as `linq(...)` or `linq.from(...)`. This constructor _guesses_ the caller's intentions based on the number and types of parameters passed. 
     - If no parameters are passed, this returns an empty sequence (see `linq.empty`)
@@ -81,7 +81,7 @@ Constructors are methods that produce a sequence of values on which other operat
 ### `linq.table`
 ### `linq.params`
 
-## Intermediate Functions [#](#intermediate-functions)
+## Intermediate Functions
 
 ### `linq:where`
 ### `linq:select`
@@ -98,11 +98,11 @@ Constructors are methods that produce a sequence of values on which other operat
 ### `linq:nonNil`
 ### `linq:concat`
 
-## Terminal Functions [#](#terminal-functions)
+## Terminal Functions
 
-## Metafunctions [#](#metafunctions)
+## Metafunctions
 
-## String Lambdas [#](#string-lambdas)
+## String Lambdas
 
 LazyLuaLinq supports string lambdas as a short-hand form of anonymous functions. Whenever a function accepts a function (e.g. a predicate or a transformation), you may also pass a string instead. For example, the following two snippets are functionally identical:
 
