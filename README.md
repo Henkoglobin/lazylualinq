@@ -63,14 +63,15 @@ Constructors are methods that produce a sequence of values on which other operat
 ### `linq.new`
 
 `linq.new(...)`, also available simply as `linq(...)` or `linq.from(...)`. This constructor _guesses_ the caller's intentions based on the number and types of parameters passed. 
-    - If no parameters are passed, this returns an empty sequence (see `linq.empty`)
-    - If a single value is passed in, ...
-        - ... and it's a _sequence_, it's returned without any further processing
-        - ... and it's a `table` with a non-`nil` value at index 1, it's iterated using `ipairs` (see `linq.array`)
-        - ... and it's a `table` that __doesn't__ have a non-`nil` value at index 1, the table is iterated using `pairs` (see `linq.table`)
-        - ... and it's a `function`, it's called repeatedly to generate the values of the sequence (see `linq.iterator`)
-        - ... and none of the above checks match, a sequence containing the parameter is returned (see `linq.params`)
-    - If more than one parameter is passed in, a sequence containing all parameters, in order, is returned (see `linq.params`)
+
+- If no parameters are passed, this returns an empty sequence (see `linq.empty`)
+- If a single value is passed in, ...
+    - ... and it's a _sequence_, it's returned without any further processing
+    - ... and it's a `table` with a non-`nil` value at index 1, it's iterated using `ipairs` (see `linq.array`)
+    - ... and it's a `table` that __doesn't__ have a non-`nil` value at index 1, the table is iterated using `pairs` (see `linq.table`)
+    - ... and it's a `function`, it's called repeatedly to generate the values of the sequence (see `linq.iterator`)
+    - ... and none of the above checks match, a sequence containing the parameter is returned (see `linq.params`)
+- If more than one parameter is passed in, a sequence containing all parameters, in order, is returned (see `linq.params`)
 
 ### `linq.array`
 ### `linq.empty`
