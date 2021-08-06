@@ -1,4 +1,4 @@
-# Abstract
+# lazylualinq
 
 LazyLuaLinq provides a simple, _lazy_ implementation of linq-like functions for Lua. With LazyLuaLinq, you can implement data transformation in elegant, expressive _queries_ akin to SQL:
 
