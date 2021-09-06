@@ -1,5 +1,5 @@
 -- local ordering = require((select(1, ...):match(".+%.") or "") .. "ordering")
-local ordering = require("lazylualinq.ordering")
+local ordering = require("ordering")
 
 local linq = {}
 
@@ -48,7 +48,7 @@ function linq.lambda(expr)
 	end
 
 	if not chunk then
-		error("Invalid lambda expression!\n" .. err, 3)
+		error("Invalid lambda expression!" .. err, 3)
 	end
 
 	return chunk()
@@ -67,11 +67,7 @@ function linq.new(...)
 	local values = {...}
 
 	if #values == 0 then
-		if not EMPTY_SEQUENCE then
-			EMPTY_SEQUENCE = linq.params()
-		end
-
-		return EMPTY_SEQUENCE
+		return linq.empty()
 	elseif #values == 1 then
 		local source = values[1]
 
@@ -121,7 +117,11 @@ end
 
 -- Empty constructor. Returns a (cached) empty sequence
 function linq.empty()
-	return linq()
+	if not EMPTY_SEQUENCE then
+		EMPTY_SEQUENCE = linq.params()
+	end
+
+	return EMPTY_SEQUENCE
 end
 
 -- Iterator constructor. Creates a Linq sequence from an iterator

@@ -1,0 +1,7 @@
+return {
+    _all = {
+        ROOT = { "test" },
+        pattern = "",
+        coverage = true
+    }
+}

@@ -1,0 +1,7 @@
+return {
+    deletestats = true,
+    include = {
+        'linq', 
+        'ordering',
+    }
+}

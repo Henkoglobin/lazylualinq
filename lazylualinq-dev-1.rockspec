@@ -1,8 +1,9 @@
 package = "lazylualinq"
-version = "0.1-2"
+rockspec_format = "3.0"
+version = "dev-1"
 source = {
    url = "git+ssh://git@github.com/Henkoglobin/lazylualinq.git",
-   tag = "rocks-test-0.1-2"
+   tag = "feature/luarocks"
 }
 description = {
    summary = "LazyLuaLinq provides a simple, lazy implementation of linq-like functions for Lua.",
@@ -12,6 +13,9 @@ description = {
 }
 dependencies = {
    "lua >= 5.1, < 5.5"
+}
+build_dependencies = {
+   "busted"
 }
 build = {
    type = "builtin",
