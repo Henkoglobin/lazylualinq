@@ -15,7 +15,9 @@ dependencies = {
    "lua >= 5.1, < 5.5"
 }
 build_dependencies = {
-   "busted"
+   "busted",
+   "luacov",
+   "luacov-reporter-lcov"
 }
 build = {
    type = "builtin",

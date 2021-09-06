@@ -83,12 +83,10 @@ function linq.new(...)
 			end
 		elseif type(source) == "function" then
 			return linq.iterator(source)
-		else
-			return linq.params(...)
 		end
-	else
-		return linq.params(...)
 	end
+
+	return linq.params(...)
 end
 
 -- Range constructor. Creates numbers in [start, start + count)

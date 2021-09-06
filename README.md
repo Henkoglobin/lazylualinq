@@ -1,5 +1,7 @@
 # lazylualinq
 
+[![test](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test.yml/badge.svg)](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test.yml)
+
 LazyLuaLinq provides a simple, _lazy_ implementation of linq-like functions for Lua. With LazyLuaLinq, you can implement data transformation in elegant, expressive _queries_ akin to SQL:
 
 ```lua
