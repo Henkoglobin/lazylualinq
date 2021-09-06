@@ -1,4 +1,4 @@
-name: test
+name: publish
 on: [push]
 
 jobs:
@@ -23,3 +23,7 @@ jobs:
     - name: test
       run: |
         luarocks test
+
+    - name: Publish to Luarocks
+      run: |
+        luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
