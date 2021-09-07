@@ -1,5 +1,5 @@
 describe("constructor 'rep'", function()
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("requires <count>", function()
         assert.has_error(

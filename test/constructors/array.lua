@@ -1,5 +1,5 @@
 describe("constructor 'array'", function()
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("iterates numeric indices", function()
         local iterator = linq.array({ "a", "b" }):getIterator()

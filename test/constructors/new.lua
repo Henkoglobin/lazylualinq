@@ -1,7 +1,7 @@
 require "test._matchers"
 
 describe("constructor 'new'", function() 
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     describe("without parameters", function()
         it("returns an empty sequence", function()

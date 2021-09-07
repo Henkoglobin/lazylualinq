@@ -5,7 +5,7 @@ describe("lambda", function()
         it("does not work without load or loadstring", function()
             _G.load, _G.loadstring = nil, nil
 
-            local linq = require("linq")
+            local linq = require("lazylualinq")
     
             assert.has_error(function() 
                 local func = linq.lambda("a => a")
@@ -21,13 +21,13 @@ describe("lambda", function()
     end)
 
     it("reports invalid #expressions", function()
-        local linq = require("linq")
+        local linq = require("lazylualinq")
 
         assert.has_error(function() linq.lambda("?") end)
     end)
 
     describe("with explicit parameter definition", function()
-        local linq = require("linq")
+        local linq = require("lazylualinq")
 
         it("should compile a simple lambda", function()
             local func = linq.lambda("a => a * 2")
@@ -82,7 +82,7 @@ describe("lambda", function()
     end)
 
     describe("with anonymous parameters", function()
-        local linq = require("linq")
+        local linq = require("lazylualinq")
 
         it("compiles successfully", function()
             local func = linq.lambda("v * 3")

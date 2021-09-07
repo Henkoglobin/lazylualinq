@@ -1,5 +1,4 @@
--- local ordering = require((select(1, ...):match(".+%.") or "") .. "ordering")
-local ordering = require("ordering")
+local ordering = require("lazylualinq.ordering")
 
 local linq = {}
 

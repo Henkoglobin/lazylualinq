@@ -1,5 +1,5 @@
 describe("constructor 'range'", function()
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("requires <start>", function()
         assert.has_error(function() linq.range() end, "First argument 'start' must be a number!")

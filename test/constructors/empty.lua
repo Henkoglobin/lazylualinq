@@ -1,5 +1,5 @@
 describe("constructor 'empty'", function()
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("returns an empty sequence", function()
         local iterator = linq.empty():getIterator()

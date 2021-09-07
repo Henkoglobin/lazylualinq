@@ -16,9 +16,11 @@ jobs:
     - name: Install LuaRocks
       uses: leafo/gh-actions-luarocks@v4.0.0
 
-    - name: build
+    - name: Install test tools
       run: |
-        luarocks build
+        luarocks install busted 
+        luarocks install luacov 
+        luarocks install luacov-reporter-lcov
 
     - name: test
       run: |

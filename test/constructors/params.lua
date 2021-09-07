@@ -1,5 +1,5 @@
 describe("constructor 'params'", function() 
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("yields an empty sequence without parameters", function() 
         local iterator = linq.params():getIterator()

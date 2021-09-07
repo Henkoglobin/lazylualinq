@@ -1,7 +1,7 @@
 require "test._matchers"
 
 describe("constructor 'table'", function()
-    local linq = require("linq")
+    local linq = require("lazylualinq")
 
     it("supports empty tables", function()
         local iterator = linq.table({}):getIterator()
