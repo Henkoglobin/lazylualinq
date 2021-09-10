@@ -1,8 +1,9 @@
-name: publish
-on: [push]
+name: tests
+on: [push, pull_request]
 
 jobs:
   test:
+    name: Test and Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -29,3 +30,4 @@ jobs:
     - name: Publish to Luarocks
       run: |
         luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
+      if: ${{ github.ref == 'refs/heads/main' }}
