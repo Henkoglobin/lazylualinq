@@ -15,7 +15,13 @@ local function any_of(state, arguments)
     return false
 end
 
+local function fail(state, arguments)
+    state.failure_message = arguments[1] or "Test failed"
+    return false
+end
+
 say:set("assertion.any_of.positive", "Expected %s to be any of %s")
 say:set("assertion.any_of.negative", "Expected %s to be neither of %s")
 
 assert:register("assertion", "any_of", any_of, "assertion.any_of.positive", "assertion.any_of.negative")
+assert:register("assertion", "fail", fail, nil, nil)

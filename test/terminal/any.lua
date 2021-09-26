@@ -15,7 +15,9 @@ describe("terminal operator 'any'", function()
 		it("stops after the first element", function()
 			local iteratorCalled = false
 			local sequence = linq.iterator(function()
-				if iteratorCalled then error() end
+				if iteratorCalled then 
+					assert.fail("Iterator should not have been called again")
+				end
 
 				iteratorCalled = true
 
@@ -48,7 +50,9 @@ describe("terminal operator 'any'", function()
 		it("stops iterating when the first match is found", function()
 			local iteratorCalled = false
 			local sequence = linq.iterator(function()
-				if iteratorCalled then error() end
+				if iteratorCalled then 
+					assert.fail("Iterator should not have been called again")
+				end
 
 				iteratorCalled = true
 
