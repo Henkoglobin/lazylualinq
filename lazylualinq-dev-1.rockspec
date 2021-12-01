@@ -2,7 +2,7 @@ package = "lazylualinq"
 rockspec_format = "3.0"
 version = "dev-1"
 source = {
-   url = "https://github.com/Henkoglobin/lazylualinq.git",
+   url = "git@github.com:Henkoglobin/lazylualinq.git",
    tag = "main"
 }
 description = {
