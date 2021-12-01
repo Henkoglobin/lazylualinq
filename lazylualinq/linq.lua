@@ -530,6 +530,32 @@ function linq:uniqueBy(selector)
 	return linq.factory(factory)
 end
 
+function linq:skip(count)
+	if type(count) ~= "number" or count < 0 then
+		error("First argument 'count' must be a positive number!", 2)
+	end
+
+	local function factory()
+		local it = self()
+		local progress = 0
+
+		return function()
+			while progress < count do
+				local value, index = it()
+				progress = progress + 1
+
+				if index == nil then
+					return
+				end
+			end
+
+			return it()
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:zip(other, resultSelector)
 	if not linq.isLinq(other) then
 		error("First argument 'other' must be a Linq object!", 2)

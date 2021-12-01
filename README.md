@@ -95,6 +95,15 @@ Constructors are methods that produce a sequence of values on which other operat
 ### `linq:thenByDescending`
 ### `linq:unique`
 ### `linq:uniqueBy`
+### `linq:skip`
+
+This operator skips the specified number of items in a sequence, yielding only the remaining values:
+
+```lua
+local seq = linq { "a", "b", "c", "d" }:skip(2)
+-- seq is now equivalent to linq { "c", "d" }
+```
+
 ### `linq:zip`
 ### `linq:defaultIfEmpty`
 ### `linq:reindex`
