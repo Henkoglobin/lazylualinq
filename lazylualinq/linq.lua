@@ -427,6 +427,50 @@ function linq:batch(size)
 	return linq.factory(factory)
 end
 
+function linq:batchValues(size)
+	if type(size) ~= "number" or size < 1 then
+		error("First argument 'size' must be a positive number", 2)
+	end
+
+	local function factory()
+		local it = self()
+		local progress = 0
+		local done = false
+
+		return function()
+			if done then
+				return nil, nil
+			end
+
+			local currentBatch = {}
+			progress = progress + 1
+
+			local value, index = it()
+			while index ~= nil do
+				table.insert(currentBatch, value)
+
+				if #currentBatch < size then
+					value, index = it()
+				else
+					break
+				end
+			end
+
+			if index == nil then
+				done = true
+
+				if #currentBatch == 0 then
+					return nil, nil
+				end
+			end
+
+			return currentBatch, progress
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:orderBy(selector, comparer)
 	if type(selector) == "string" then
 		selector = linq.lambda(selector)
