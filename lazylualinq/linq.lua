@@ -383,6 +383,50 @@ function linq:selectMany(collectionSelector, resultSelector)
 	return linq.factory(factory)
 end
 
+function linq:batch(size)
+	if type(size) ~= "number" or size < 1 then
+		error("First argument 'size' must be a positive number", 2)
+	end
+
+	local function factory()
+		local it = self()
+		local progress = 0
+		local done = false
+
+		return function()
+			if done then
+				return nil, nil
+			end
+
+			local currentBatch = {}
+			progress = progress + 1
+
+			local value, index = it()
+			while index ~= nil do
+				table.insert(currentBatch, { value, index })
+
+				if #currentBatch < size then
+					value, index = it()
+				else
+					break
+				end
+			end
+
+			if index == nil then
+				done = true
+
+				if #currentBatch == 0 then
+					return nil, nil
+				end
+			end
+
+			return currentBatch, progress
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:orderBy(selector, comparer)
 	if type(selector) == "string" then
 		selector = linq.lambda(selector)
@@ -1186,6 +1230,10 @@ end
 -- using :foreach(print). If this behaviour is not desired,
 -- use :select(print).
 function linq:foreach(func)
+	if type(func) == "string" then
+		func = linq.lambda(func)
+	end
+
 	if type(func) ~= "function" then
 		error("First argument 'func' must be a function!", 2)
 	end

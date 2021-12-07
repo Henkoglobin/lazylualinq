@@ -89,6 +89,24 @@ Constructors are methods that produce a sequence of values on which other operat
 ### `linq:where`
 ### `linq:select`
 ### `linq:selectMany`
+### `linq:batch`
+
+Creates a sequence of tables containing the specified number values (and indices) each, with a trailing batch containing any 'left over' values.
+
+```lua
+local seq = linq { "a", "b", "c" }:batch(2)
+--[[ seq is now equivalent to linq { 
+    { 
+        { "a", 1 }, 
+        { "b", 2 },
+    }, 
+    { 
+        { "c", 3 },
+    }
+}
+]]
+```
+
 ### `linq:orderBy`
 ### `linq:orderByDescending`
 ### `linq:thenBy`
