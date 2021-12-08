@@ -644,6 +644,35 @@ function linq:skip(count)
 	return linq.factory(factory)
 end
 
+function linq:take(count)
+	if type(count) ~= "number" or count < 0 then
+		error("First argument 'count' must be a positive number!", 2)
+	end
+
+	local function factory()
+		local it = self()
+		local progress = 0
+		local done = false
+
+		return function()
+			if done or progress >= count then
+				return nil, nil
+			end
+
+			progress = progress + 1
+			local value, index = it()
+
+			if index == nil then
+				done = true
+			end
+
+			return value, index
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:zip(other, resultSelector)
 	if not linq.isLinq(other) then
 		error("First argument 'other' must be a Linq object!", 2)

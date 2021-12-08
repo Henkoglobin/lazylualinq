@@ -135,6 +135,15 @@ local seq = linq { "a", "b", "c", "d" }:skip(2)
 -- seq is now equivalent to linq { "c", "d" }
 ```
 
+### `linq:take`
+
+This operator yields the first `count` items from the source sequence, stopping after the specified amount.
+
+```lua
+local seq = linq { "a", "b", "c" }:take(2)
+-- seq is now equivalent to linq { "a", "b" }
+```
+
 ### `linq:zip`
 ### `linq:defaultIfEmpty`
 ### `linq:reindex`
