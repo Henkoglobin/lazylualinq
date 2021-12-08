@@ -1,4 +1,4 @@
-describe("lambda", function()
+describe("#lambda", function()
 	insulate("requires load or loadstring", function()
 		local loadBackup, loadstringBackup = load, loadstring
 	

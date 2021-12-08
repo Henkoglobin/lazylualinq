@@ -1,6 +1,6 @@
 require "test._matchers"
 
-describe("constructor 'table'", function()
+describe("constructor '#table'", function()
 	local linq = require("lazylualinq")
 
 	it("supports empty tables", function()

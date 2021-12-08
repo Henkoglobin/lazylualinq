@@ -1,4 +1,4 @@
-describe("terminal operator 'all'", function() 
+describe("terminal operator '#all'", function() 
 	local linq = require("lazylualinq")
 
 	it("returns true if all items matche the predicate", function()

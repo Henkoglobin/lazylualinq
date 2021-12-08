@@ -1,4 +1,4 @@
-describe("intermediate operator 'skip'", function() 
+describe("intermediate operator '#skip'", function() 
 	local linq = require("lazylualinq")
 
 	it("skips the specified number of values", function()

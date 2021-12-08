@@ -1,4 +1,4 @@
-describe("constructor 'range'", function()
+describe("constructor '#range'", function()
 	local linq = require("lazylualinq")
 
 	it("requires <start>", function()

@@ -1,4 +1,4 @@
-describe("intermediate function 'where'", function()
+describe("intermediate function '#where'", function()
 	local linq = require("lazylualinq")
 
 	it("filters items that don't match the predicate", function()

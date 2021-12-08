@@ -1,4 +1,4 @@
-describe("constructor 'rep'", function()
+describe("constructor '#rep'", function()
 	local linq = require("lazylualinq")
 
 	it("requires <count>", function()

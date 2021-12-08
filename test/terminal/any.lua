@@ -1,4 +1,4 @@
-describe("terminal operator 'any'", function() 
+describe("terminal operator '#any'", function() 
 	local linq = require("lazylualinq")
 
 	describe("without a predicate", function()

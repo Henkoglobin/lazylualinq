@@ -1,4 +1,4 @@
-describe("constructor 'iterator'", function()
+describe("constructor '#iterator'", function()
 	local linq = require("lazylualinq")
 
 	it("calls the passed function repeatedly to retrieve items", function()

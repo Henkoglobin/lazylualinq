@@ -1,4 +1,4 @@
-describe("constructor 'array'", function()
+describe("constructor '#array'", function()
 	local linq = require("lazylualinq")
 
 	it("iterates numeric indices", function()

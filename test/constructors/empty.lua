@@ -1,4 +1,4 @@
-describe("constructor 'empty'", function()
+describe("constructor '#empty'", function()
 	local linq = require("lazylualinq")
 
 	it("returns an empty sequence", function()

@@ -1,4 +1,4 @@
-describe("terminal operator 'first'", function() 
+describe("terminal operator '#first'", function() 
 	local linq = require("lazylualinq")
 
 	describe("without a predicate", function()

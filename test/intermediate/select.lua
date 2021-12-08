@@ -1,4 +1,4 @@
-describe("intermediate function 'select'", function()
+describe("intermediate function '#select'", function()
 	local linq = require("lazylualinq")
 
 	it("transforms items using the projection", function()

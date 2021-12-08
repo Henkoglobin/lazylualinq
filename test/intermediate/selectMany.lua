@@ -1,4 +1,4 @@
-describe("intermediate operator 'selectMany'", function()
+describe("intermediate operator '#selectMany'", function()
 	local linq = require("lazylualinq")
 
 	it("flattens a sequence of sequences", function()
