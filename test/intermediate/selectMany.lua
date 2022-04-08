@@ -162,5 +162,38 @@ describe("intermediate operator '#selectMany'", function()
 
 				assert.is_same({iterator()}, { nil, nil })
 		end)
+
+		it("runs the example from the documentation", function()
+			local iterator = linq { 
+				{ 
+					author = "Brandon Sanderson",
+					name = "Mistborn",
+					books = {
+						"The Final Empire",
+						"The Well of Ascension",
+						"The Hero of Ages"
+					}
+				},
+				{
+					author = "Patrick Rothfuss",
+					name = "The Kingkiller Chronicle",
+					books = {
+						"The Name of the Wind",
+						"The Wise Man's Fear"
+					}
+				}
+			}:selectMany(
+				function(t, _) return t.books end,
+				function(series, _, book, bookIndex) return ("%s (Book %d of %s) by %s"):format(book, bookIndex, series.name, series.author) end
+			):getIterator()
+
+			assert.is_same({iterator()}, {"The Final Empire (Book 1 of Mistborn) by Brandon Sanderson", 1 })
+			assert.is_same({iterator()}, {"The Well of Ascension (Book 2 of Mistborn) by Brandon Sanderson",2 })
+			assert.is_same({iterator()}, {"The Hero of Ages (Book 3 of Mistborn) by Brandon Sanderson",3 })
+			assert.is_same({iterator()}, {"The Name of the Wind (Book 1 of The Kingkiller Chronicle) by Patrick Rothfuss",4 })
+			assert.is_same({iterator()}, {"The Wise Man's Fear (Book 2 of The Kingkiller Chronicle) by Patrick Rothfuss",5 })
+			
+			assert.is_same({iterator()}, { nil, nil })
+		end)
 	end)
 end)

@@ -62,7 +62,7 @@ There are three major categories of functions (or operators) in lazylualinq: Con
 
 Constructors are methods that produce a sequence of values on which other operations can then be performed. 
 
-### `linq.new`
+### `linq.new(...)`
 
 `linq.new(...)`, also available simply as `linq(...)` or `linq.from(...)`. This constructor _guesses_ the caller's intentions based on the number and types of parameters passed. 
 
@@ -75,21 +75,99 @@ Constructors are methods that produce a sequence of values on which other operat
     - ... and none of the above checks match, a sequence containing the parameter is returned (see `linq.params`)
 - If more than one parameter is passed in, a sequence containing all parameters, in order, is returned (see `linq.params`)
 
-### `linq.array`
-### `linq.empty`
-### `linq.factory`
-### `linq.iterator`
-### `linq.range`
-### `linq.rep`
-### `linq.table`
-### `linq.params`
+### `linq.array(table)`
+### `linq.empty()`
+### `linq.factory(factory)`
+### `linq.iterator(func)`
+### `linq.range(start, count)`
+### `linq.rep(value, count)`
+### `linq.table(table)`
+### `linq.params(...)`
 
 ## Intermediate Functions
 
-### `linq:where`
-### `linq:select`
-### `linq:selectMany`
-### `linq:batch`
+### `linq:where(predicate)`
+
+Returns a sequence that only contains the elements from the source that satisfy the predicate. This function is sometimes also called `filter` (e.g. in Java Streams, JavaScript) and can also be used as such.
+
+```lua
+local seq = linq {
+    { name = "Jane Doe", role = "Manager" },
+    { name = "Jonathan Doe", role = "Trainee" },
+    { name = "John Doe", role = "Manager" }
+}:where(function(person) return person.role == "Manager" end)
+--[[ seq is now linq {
+    { name = "Jane Doe", role = "Manager" },
+    { name = "John Doe", role = "Manager" }
+}
+]]
+```
+
+### `linq:select(selector)`
+
+Projects every element of the source sequence to a new element. This function is sometimes also called `map` (e.g. in Java Streams, JavaScript) and can also be used as such.
+
+```lua
+local seq = linq { "cat", "bird", "penguin" }
+    :select(function(s) return #s end)
+-- seq is now linq { 3, 4, 7 }
+```
+
+### `linq:selectMany(collectionSelector, [resultSelector])`
+
+`selectMany` projects each element of the source sequence to an 'inner' sequence and then flattens the results into a single sequence. This function is also called `flatMap` (e.g. in Java Streams, JavaScript) and can also be used as such. The selector does not need to return linq sequences, as `linq.new` will be called on the returned values.
+
+A second parameter, the `resultSelector`, can be used to transform the inner elements even further. It will be called with four parameters: the _outer_ value and index, followed by the _inner_ value and index. 
+
+```lua
+-- Simplest case: flatten a sequence of nested tables
+local seq = linq { 
+    { "a", "b" }, 
+    { "c" } 
+}:selectMany(function(t) return t end)
+--[[ seq is now linq { 
+    "a", 
+    "b", 
+    "c" 
+}
+]]
+
+-- Using the result selector to allow for more complex result items
+local booksAndAuthors = linq { 
+    { 
+        author = "Brandon Sanderson",
+        name = "Mistborn",
+        books = {
+            "The Final Empire",
+            "The Well of Ascension",
+            "The Hero of Ages"
+        }
+    },
+    {
+        author = "Patrick Rothfuss",
+        name = "The Kingkiller Chronicle",
+        books = {
+            "The Name of the Wind",
+            "The Wise Man's Fear"
+        }
+    }
+}:selectMany(
+    function(t, _) return t.books end,
+    function(series, _, book, bookIndex) 
+        return ("%s (Book %d of %s) by %s"):format(book, bookIndex, series.name, series.author) 
+    end
+)
+--[[ booksAndAuthors is now linq {
+    "The Final Empire (Book 1 of Mistborn) by Brandon Sanderson",
+    "The Well of Ascension (Book 2 of Mistborn) by Brandon Sanderson",
+    "The Hero of Ages (Book 3 of Mistborn) by Brandon Sanderson",
+    "The Name of the Wind (Book 1 of The Kingkiller Chronicle) by Patrick Rothfuss",
+    "The Wise Man's Fear (Book 2 of The Kingkiller Chronicle) by Patrick Rothfuss"
+}
+]]
+```
+
+### `linq:batch(size)`
 
 Creates a sequence of tables containing the specified number values (and indices) each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batchValues`](#linqbatchvalues), this will create batches of _nested_ tables, each containing both the value and the index taken from the source sequence.
 
@@ -107,7 +185,7 @@ local seq = linq { "a", "b", "c" }:batch(2)
 ]]
 ```
 
-### `linq:batchValues`
+### `linq:batchValues(size)`
 
 Creates a sequence of tables containing the specified number of values each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batch`](#linqbatch), this creates _flat_ tables containing _only_ the values of the source sequence, the indices are _lost_.
 
@@ -120,13 +198,13 @@ local seq = linq { "a", "b", "c" }:batchValues(2)
 ]]
 ```
 
-### `linq:orderBy`
-### `linq:orderByDescending`
-### `linq:thenBy`
-### `linq:thenByDescending`
-### `linq:unique`
-### `linq:uniqueBy`
-### `linq:skip`
+### `linq:orderBy(selector, [comparer])`
+### `linq:orderByDescending(selector, [comparer])`
+### `linq:thenBy(selector, [comparer])`
+### `linq:thenByDescending(selector, [comparer])`
+### `linq:unique()`
+### `linq:uniqueBy(selector)`
+### `linq:skip(count)`
 
 This operator skips the specified number of items in a sequence, yielding only the remaining values:
 
@@ -135,7 +213,7 @@ local seq = linq { "a", "b", "c", "d" }:skip(2)
 -- seq is now equivalent to linq { "c", "d" }
 ```
 
-### `linq:take`
+### `linq:take(count)`
 
 This operator yields the first `count` items from the source sequence, stopping after the specified amount.
 
@@ -144,32 +222,32 @@ local seq = linq { "a", "b", "c" }:take(2)
 -- seq is now equivalent to linq { "a", "b" }
 ```
 
-### `linq:zip`
-### `linq:defaultIfEmpty`
-### `linq:reindex`
-### `linq:nonNil`
-### `linq:concat`
+### `linq:zip(other, resultSelector)`
+### `linq:defaultIfEmpty(defaultValue, defaultIndex)`
+### `linq:reindex()`
+### `linq:nonNil()`
+### `linq:concat(other)`
 
 ## Terminal Functions
 
-### `linq:aggregate`
-### `linq:count`
-### `linq:sum`
-### `linq:max`
-### `linq:min`
-### `linq:any`
-### `linq:all`
-### `linq:first`
-### `linq:firstOr`
-### `linq:single`
-### `linq:singleOr`
-### `linq:last`
-### `linq:lastOr`
-### `linq:sequenceEquals`
-### `linq:toArray`
-### `linq:toTable`
-### `linq:getIterator`
-### `linq:foreach`
+### `linq:aggregate(seed, selector)`
+### `linq:count([predicate])`
+### `linq:sum([selector])`
+### `linq:max([selector])`
+### `linq:min([selector])`
+### `linq:any([predicate])`
+### `linq:all(predicate)`
+### `linq:first([predicate])`
+### `linq:firstOr([predicate], defaultValue, defaultIndex)`
+### `linq:single([predicate])`
+### `linq:singleOr([predicate], defaultValue, defaultIndex)`
+### `linq:last([predicate])`
+### `linq:lastOr([predicate], defaultValue, defaultIndex)`
+### `linq:sequenceEquals(other, [comparer])`
+### `linq:toArray()`
+### `linq:toTable()`
+### `linq:getIterator()`
+### `linq:foreach(func)`
 
 ## Metafunctions
 
