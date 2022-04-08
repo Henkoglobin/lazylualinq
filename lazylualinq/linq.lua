@@ -1322,4 +1322,8 @@ function linq:foreach(func)
 	until index == nil
 end
 
+linq.map = linq.select
+linq.filter = linq.where
+linq.flatMap = linq.selectMany
+
 return linq

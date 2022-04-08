@@ -55,4 +55,15 @@ describe("intermediate function '#where'", function()
 		assert.is_same({iterator()}, { 2, 2 })
 		assert.is_same(iteratorCalls, 2)
 	end)
+
+	it("can also be called using 'filter'", function()
+		local iterator = linq { 1, 2, 3, 4 }
+			:filter(function(v) return v % 2 == 0 end)
+			:getIterator()
+
+		assert.is_same({iterator()}, { 2, 2 })
+		assert.is_same({iterator()}, { 4, 4 })
+
+		assert.is_same({iterator()}, { nil, nil })
+	end)
 end)

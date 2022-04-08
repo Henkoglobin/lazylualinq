@@ -85,6 +85,17 @@ describe("intermediate operator '#selectMany'", function()
 		assert.is_same({iterator()}, { nil, nil })
 	end)
 
+	it("can also be called using 'flatMap'", function() 
+		local iterator = linq {
+			{ hello = "世界" }
+		}
+		:flatMap(function(inner) return inner end)
+		:getIterator()
+
+		assert.is_same({iterator()}, { "世界", "hello" })
+		assert.is_same({iterator()}, { nil, nil })
+	end)
+
 	describe("with a result projection", function() 
 		it("uses outer and inner element values and keys", function()
 			local iterator = linq { "hello", "world" }

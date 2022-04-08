@@ -58,4 +58,15 @@ describe("intermediate function '#select'", function()
 		assert.is_same({iterator()}, { 2, 2 })
 		assert.is_same(iteratorCalls, 2)
 	end)
+
+	it("can also be called using 'map'", function()
+		local iterator = linq { 1, 2 }
+			:map(function(v, k) return v * 2, k end)
+			:getIterator()
+
+		assert.is_same({iterator()}, { 2, 1 })
+		assert.is_same({iterator()}, { 4, 2 })
+
+		assert.is_same({iterator()}, { nil, nil })
+	end)
 end)
