@@ -169,7 +169,7 @@ local booksAndAuthors = linq {
 
 ### `linq:batch(size)`
 
-Creates a sequence of tables containing the specified number values (and indices) each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batchValues`](#linqbatchvalues), this will create batches of _nested_ tables, each containing both the value and the index taken from the source sequence.
+Creates a sequence of tables containing the specified number values (and indices) each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batchValues`](#linqbatchvaluessize), this will create batches of _nested_ tables, each containing both the value and the index taken from the source sequence.
 
 ```lua
 local seq = linq { "a", "b", "c" }:batch(2)
@@ -187,7 +187,7 @@ local seq = linq { "a", "b", "c" }:batch(2)
 
 ### `linq:batchValues(size)`
 
-Creates a sequence of tables containing the specified number of values each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batch`](#linqbatch), this creates _flat_ tables containing _only_ the values of the source sequence, the indices are _lost_.
+Creates a sequence of tables containing the specified number of values each, with a trailing batch containing any 'left over' values. Note that, other than [`linq:batch`](#linqbatchsize), this creates _flat_ tables containing _only_ the values of the source sequence, the indices are _lost_.
 
 ```lua
 local seq = linq { "a", "b", "c" }:batchValues(2)
@@ -251,9 +251,27 @@ local seq = linq { "a", "b", "c" }:take(2)
 
 ## Metafunctions
 
-### `__index` (`sequence[index]`)
 ### `__len` (`#sequence`)
+
+Yields the number of elements in a sequence, similar to [`linq:count`](#linqcountpredicate). This allows accessing the number of elements using the `#` operator:
+
+> Please note that using `#sequence` still iterates (and possibly consumes) the whole sequence, it's really *just* a shortcut to `sequence:count()`!
+
+```lua
+local sequence = linq { 1, 2, 3, 4, 5, 6 }
+    :where(function(x) return x % 2 == 1 end)
+
+local length = #sequence -- length is 3
+```
+
 ### `__concat` (`seqA .. seqB`)
+
+Concatenates two (or more!) sequences using the concatenation operator `..`. This does the same as calling [`linq:concat`](#linqconcatother).
+
+```lua
+local sequence = linq { "Hello" } .. linq { "World" }
+-- sequence is now equivalent to linq { "Hello", "World" }
+```
 
 ## String Lambdas
 

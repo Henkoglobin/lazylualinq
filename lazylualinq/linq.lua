@@ -159,7 +159,16 @@ end
 -- This is the constructor that is used by all the other constructors as well
 -- as other functions that return a sequence.
 function linq.factory(fac)
-	return setmetatable({}, { __call = fac, __index = linq })
+	return setmetatable({}, { 
+		__call = fac, 
+		__index = linq,
+		__len = function(self) 
+			return self:count()
+		end,
+		__concat = function(self, other)
+			return self:concat(other)
+		end,
+	})
 end
 
 -- Repeat constructor. Returns a Linq sequence that contains `value`, repeated
@@ -797,21 +806,6 @@ function linq:concat(other)
 	end
 
 	return linq.factory(factory)
-end
-
---[[
-		LINQ METAFUNCTIONS
-  ]]
-function linq:__index(key)
-	return self:where(function(v, i) return i == key end):first()
-end
-
-function linq:__len()
-	return self:count()
-end
-
-function linq:__concat(other)
-	return self:concat(other)
 end
 
 --[[
