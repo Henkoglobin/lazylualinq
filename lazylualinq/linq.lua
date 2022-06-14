@@ -168,6 +168,12 @@ function linq.factory(fac)
 		__concat = function(self, other)
 			return self:concat(other)
 		end,
+		__pairs = function(self)
+			return function(it)
+				local v, k = it()
+				return k, v
+			end, self:getIterator(), nil
+		end,
 	})
 end
 
@@ -1316,8 +1322,12 @@ function linq:foreach(func)
 	until index == nil
 end
 
+-- Convenience method aliases
 linq.map = linq.select
 linq.filter = linq.where
 linq.flatMap = linq.selectMany
+
+-- Allow calling :pairs() as an alias to the standard library's pairs(...)
+linq.pairs = pairs
 
 return linq

@@ -273,6 +273,27 @@ local sequence = linq { "Hello" } .. linq { "World" }
 -- sequence is now equivalent to linq { "Hello", "World" }
 ```
 
+### `__pairs` (`for key, value in pairs(seq) do`)
+
+Allows iterating a sequence in a `for` loop using Lua's `pairs` method (or, alternatively, using `:pairs`):
+
+```lua
+-- Using Lua's pairs(...):
+for _, value in pairs(linq(1, 2, 3, 4, 5, 6):where(function(i) return i % 2 == 1 end)) do
+    print(value)
+end
+
+-- Or, using the :pairs() alias:
+for _, value in linq(1, 2, 3, 4, 5, 6):where(function(i) return i % 2 == 1 end):pairs() do
+    print(value)
+end
+
+-- Both variants print:
+-- 1
+-- 3
+-- 5
+```
+
 ## String Lambdas
 
 LazyLuaLinq supports string lambdas as a short-hand form of anonymous functions. Whenever a function accepts a function (e.g. a predicate or a transformation), you may also pass a string instead. For example, the following two snippets are functionally identical:
