@@ -26,6 +26,8 @@ jobs:
     needs: [tests-53, tests-54]
 
     steps:
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v4.0.0
       - name: Publish to LuaRocks
         run: |
           luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
