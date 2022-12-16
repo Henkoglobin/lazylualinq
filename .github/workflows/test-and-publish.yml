@@ -26,6 +26,7 @@ jobs:
     needs: [tests-53, tests-54]
 
     steps:
+      - uses: actions/checkout@main
       - name: Install Lua/LuaJIT
         uses: leafo/gh-actions-lua@v8.0.0
         with:
