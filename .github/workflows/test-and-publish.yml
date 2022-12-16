@@ -33,6 +33,9 @@ jobs:
           luaVersion: 5.4
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@v4.0.0
+      - name: Install cjson
+        run: |
+          luarocks install cjson
       - name: Publish to LuaRocks
         run: |
           luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
