@@ -486,6 +486,39 @@ function linq:batchValues(size)
 	return linq.factory(factory)
 end
 
+function linq:windowed(size)
+	if type(size) ~= "number" or size < 1 then
+		error("First argument 'size' must be a positive number", 2)
+	end
+
+	local function factory()
+		local it = self()
+		local progress = 0
+		local done = false
+		local window = {}
+
+		return function()
+			progress = progress + 1
+			repeat
+				local value, index = it()
+
+				if index == nil then
+					return nil, nil
+				end
+
+				table.insert(window, value)
+			until #window == size
+
+			local ret = window
+			window = linq.from(window):skip(1):toArray()
+			
+			return ret, progress
+		end
+	end
+
+	return linq.factory(factory)
+end
+
 function linq:orderBy(selector, comparer)
 	if type(selector) == "string" then
 		selector = linq.lambda(selector)

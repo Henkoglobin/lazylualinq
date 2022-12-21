@@ -196,6 +196,22 @@ local seq = linq { "a", "b", "c" }:batchValues(2)
 ]]
 ```
 
+## `linq:windowed(size)`
+
+Creates a sequence of tables containing a 'sliding window' view of the specified size over the source sequence. The resulting values are tables of _exactly_ the size specified. If the source sequence contains fewer values than required to create a single window, no windows will be generated, resulting in an empty result sequence.
+
+Note that the indices are _lost_ in this operation.
+
+```lua
+local seq = linq { "a", "b", "c", "d", "e" }:windowed(3)
+--[[ seq is now equivalent to linq {
+    { "a", "b", "c" },
+    { "b", "c", "d" },
+    { "c", "d", "e" }
+}
+]]
+```
+
 ## `linq:orderBy(selector, [comparer])`
 ## `linq:orderByDescending(selector, [comparer])`
 ## `linq:thenBy(selector, [comparer])`
