@@ -21,8 +21,7 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
-      ["lazylualinq.init"] = "src/lazylualinq/init.lua",
-      ["lazylualinq.linq"] = "src/lazylualinq/linq.lua",
+      ["lazylualinq"] = "src/lazylualinq.lua",
       ["lazylualinq.ordering"] = "src/lazylualinq/ordering.lua",
    }
 }
