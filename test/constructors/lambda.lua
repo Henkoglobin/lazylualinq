@@ -1,7 +1,5 @@
 describe("#lambda", function()
 	insulate("requires load or loadstring", function()
-		local loadBackup, loadstringBackup = load, loadstring
-	
 		it("does not work without load or loadstring", function()
 			_G.load, _G.loadstring = nil, nil
 
@@ -10,13 +8,6 @@ describe("#lambda", function()
 			assert.has_error(function() 
 				local func = linq.lambda("a => a")
 			end) 
-		end)
-
-		it("#meta restore globals", function() 
-			-- Due to a bug in busted's insulation, we need to explicitely recover the values
-			-- of these globals at the end of the insulation block
-			-- See https://github.com/Olivine-Labs/busted/issues/666 for details
-			_G.load, _G.loadstring = loadBackup, loadstringBackup
 		end)
 	end)
 
