@@ -650,10 +650,16 @@ function linq:uniqueBy(selector)
 
 		return function()
 			local value, index, key
-			repeat
+            while true do
 				value, index = it()
+                if index == nil then
+                    break
+                end
 				key = selector(value)
-			until index == nil or not seen[key]
+                if not seen[key] then
+                    break
+                end
+            end
 
 			if key ~= nil then
 				seen[key] = true
