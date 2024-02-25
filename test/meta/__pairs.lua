@@ -1,7 +1,16 @@
 describe("metamethod '__pairs'", function()
 	local linq = require("lazylualinq")
 
+	local major, minor = _VERSION:match("Lua (%d).(%d)")
+	local major, minor = tonumber(major), tonumber(minor)
+	local pairsMetamethodAvailable = major > 5 or (major == 5 and minor >= 2)
+
 	it("allows iterating with for ... in pairs()", function()
+		if not pairsMetamethodAvailable then
+			pending("__pairs is not available in Lua 5.1 and earlier.")
+			return
+		end
+
 		local items = { "a", "b", "c", "d" }
 
 		local sequence = linq(items)
@@ -20,6 +29,11 @@ describe("metamethod '__pairs'", function()
 	end)
 
 	it("works with intermediate operators", function()
+		if not pairsMetamethodAvailable then
+			pending("__pairs is not available in Lua 5.1 and earlier.")
+			return
+		end
+
 		local books = {
 			{ author = "Brandon Sanderson", title = "The Final Empire" },
 			{ author = "Brandon Sanderson", title = "The Well of Ascension" },
@@ -42,6 +56,11 @@ describe("metamethod '__pairs'", function()
 	end)
 
 	it("can also be called as :pairs()", function()
+		if not pairsMetamethodAvailable then
+			pending("__pairs is not available in Lua 5.1 and earlier.")
+			return
+		end
+
 		local books = {
 			{ author = "Brandon Sanderson", title = "The Final Empire" },
 			{ author = "Brandon Sanderson", title = "The Well of Ascension" },
