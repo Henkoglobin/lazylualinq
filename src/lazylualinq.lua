@@ -160,7 +160,13 @@ end
 -- as other functions that return a sequence.
 function linq.factory(fac)
 	return setmetatable({}, { 
-		__call = fac, 
+		__call = function(self, ...)
+			local numArgs = select('#', ...)
+			if numArgs > 0 then
+				error("Invalid use of lazylualinq sequence.  Did you forget to call it (or getIterator) before using it inside a for loop?", 2)
+			end
+			return fac(self)
+		end,
 		__index = linq,
 		__len = function(self) 
 			return self:count()
