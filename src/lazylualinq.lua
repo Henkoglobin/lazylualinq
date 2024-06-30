@@ -11,7 +11,7 @@ setmetatable(linq, {
 
 local LAMBDA_PATTERN = [[^%s*%(?(.-)%)?%s*=>%s*(.-)%s*$]]
 local RETURN_PATTERN = [[%b()]]
-local EMPTY_SEQUENCE	
+local EMPTY_SEQUENCE
 
 local tablemt = { __index = table }
 
@@ -19,13 +19,57 @@ local function newTable()
 	return setmetatable({}, tablemt)
 end
 
+local loadString
+if loadstring and setfenv then
+	-- Lua 5.1 - load the chunk with loadstring, set the environment with setfenv
+
+	local _loadstring = loadstring
+	local _setfenv = setfenv
+
+	loadString = function(chunk, env)
+		local func = _loadstring(chunk)
+		_setfenv(func, env)
+		return func
+	end
+elseif load then
+	-- Lua 5.2 and up - load the chunk and set its environment with load
+
+	local _load = load
+
+	loadString = function(chunk, env)
+		return _load(chunk, chunk, "t", env)
+	end
+else
+	-- Any other version (or we're sandboxed) - loading is not available.
+
+	loadString = function()
+		error("Neither loadstring (+setfenv) nor load are defined!")
+	end
+end
+
+local loadStringEnv = _G
+
+function linq.withLoadString(newLoadString)
+	loadString = newLoadString
+	return linq
+end
+
+function linq.disableLambdas()
+	loadString = function()
+		error("Lambdas have been disabled")
+	end
+	return linq
+end
+
+function linq.withLambdaEnv(env)
+	loadStringEnv = env
+	return linq
+end
+
 function linq.isLinq(obj)
 	return getmetatable(obj) and getmetatable(obj).__index == linq
 end
 
-local loadstring = loadstring or load or function()
-	error("Neither loadstring nor load are defined!")
-end
 
 function linq.lambda(expr)
 	local args, rets = expr:match(LAMBDA_PATTERN)
@@ -37,12 +81,14 @@ function linq.lambda(expr)
 			rets = rets:sub(2, #rets - 1)
 		end
 
-		chunk, err = loadstring(
-			([[return function(%s) return %s end]]):format(args, rets)
+		chunk, err = loadString(
+			([[return function(%s) return %s end]]):format(args, rets),
+			loadStringEnv
 		)
 	else
-		chunk, err = loadstring(
-			([[return function(v, k) return %s end]]):format(expr)
+		chunk, err = loadString(
+			([[return function(v, k) return %s end]]):format(expr),
+			loadStringEnv
 		)
 	end
 

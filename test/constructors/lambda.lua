@@ -1,6 +1,7 @@
+local helpers = require("test._helpers")
+
 describe("#lambda", function()
-	local major, minor = _VERSION:match("Lua (%d)%.(%d)")
-	local major, minor = tonumber(major), tonumber(minor)
+	local major, minor = helpers.getLuaVersion()
 	local extendedDebugInfoAvailable = major > 5 or (major == 5 and minor >= 2)
 
 	insulate("requires load or loadstring", function()

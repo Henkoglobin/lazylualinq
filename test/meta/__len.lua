@@ -1,8 +1,9 @@
+local helpers = require("test._helpers")
+
 describe("metafunction '__len'", function()
 	local linq = require("lazylualinq")
 
-	local major, minor = _VERSION:match("Lua (%d)%.(%d)")
-	local major, minor = tonumber(major), tonumber(minor)
+	local major, minor = helpers.getLuaVersion()
 	local lenMetamethodAvailable = major > 5 or (major == 5 and minor >= 2)
 
 	it("returns the length of the sequence", function()

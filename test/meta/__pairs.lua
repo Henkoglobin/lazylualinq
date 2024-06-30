@@ -1,8 +1,9 @@
+local helpers = require("test._helpers")
+
 describe("metamethod '__pairs'", function()
 	local linq = require("lazylualinq")
 
-	local major, minor = _VERSION:match("Lua (%d)%.(%d)")
-	local major, minor = tonumber(major), tonumber(minor)
+	local major, minor = helpers.getLuaVersion()
 	local pairsMetamethodAvailable = major > 5 or (major == 5 and minor >= 2)
 
 	it("allows iterating with for ... in pairs()", function()
