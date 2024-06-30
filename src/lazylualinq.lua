@@ -28,6 +28,10 @@ if loadstring and setfenv then
 
 	loadString = function(chunk, env)
 		local func = _loadstring(chunk)
+		if func == nil then 
+			return nil
+		end
+
 		_setfenv(func, env)
 		return func
 	end

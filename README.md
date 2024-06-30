@@ -31,6 +31,7 @@ Without lazy evaluation, this code would result in a division by zero when calcu
     - [Terminal Functions](#terminal-functions)
     - [Metafunctions](#metafunctions)
     - [String Lambdas](#string-lambdas)
+    - [Module Configuration](#module-configuration)
 
 # Basic Concepts
 
@@ -54,7 +55,7 @@ In order to understand how to effectively work with LazyLuaLinq, you should at l
 
     To learn more about this feature, check out [String Lambdas](#string-lambdas).
 
-There are three major categories of functions (or operators) in lazylualinq: Constructors (functions that create a sequence of values from some kind of source), intermediate functions (that perform some kind of transformative operation on a sequence, such as filtering or projections) and terminal functions (which also perform a transformative operation on a sequence, but return a value that's _not_ a sequence). 
+There are three major categories of functions (or operators) in LazyLuaLinq: Constructors (functions that create a sequence of values from some kind of source), intermediate functions (that perform some kind of transformative operation on a sequence, such as filtering or projections) and terminal functions (which also perform a transformative operation on a sequence, but return a value that's _not_ a sequence). 
 
 # Constructors
 
@@ -340,4 +341,64 @@ If you should want to use lambdas for other uses than in LazyLuaLinq, you can us
 ```lua
 local timesTwo = linq.lambda("v => v * 2")
 -- local function timesTwo(v) return v * 2 end
+```
+
+## Module Configuration
+
+There are various functions that can be called directly on the `linq` module in order to configure the way it works.
+As of today, all available configuration functions are used to increase the safety of [String Lambdas](string-lambdas).
+
+> Please note that these functions _globally_ alter the behavior of LazyLuaLinq. Due to the fact that Lua's `require`
+> function caches the module after loading it for the first time, there's only a single instance of `linq`, even
+> when `require`-ing it multiple times. Thus, you cannot (currently) have multiple `linq` instances with different
+> behaviors.
+
+### `disableLambdas`
+
+Fully disables lambdas globally. Please note that this also disables the use of `linq.lambda` from your own code, though
+this may change in the future.
+
+```lua
+local linq = require("lazylualinq").disableLambdas()
+
+linq { 1, 2, 3 }:select("v => v * 2") -- error: Lambdas have been disabled
+```
+
+### `withLambdaEnv`
+
+Sets an environment to use whenever a lambda is created. Note that this environment will also be used when calling 
+`linq.lambda` from your own code, though this may change in the future.
+
+This function can be used to execute string lambdas in a sandbox, preventing access to potentially dangerous functions
+such as filesystem access or `load`/`loadstring`.
+
+```lua
+local linq = require("lazylualinq").withLambdaEnv({})
+local func = linq.lambda("_ => os")
+
+print(func()) -- nil
+```
+
+### `withLoadString`
+
+Sets a custom function to load a chunk from a string. The function will be called with two arguments: `chunk` and `env`.
+The provided function may perform any operation on the chunk before actually loading it. The passed `env` represents
+the environment that the chunk should be executed in (as set per [`withLambdaEnv`](#withLambdaEnv)).
+
+This function may be used to make string lambdas work in more restricted environments. *You should only use this
+function in environments where string lambdas do not work by default.* 
+
+For example, LazyLuaLinq uses the equivalent of the following code to make string lambdas work in Lua 5.1:
+
+```lua
+local linq = require("lazylualinq")
+    .withLoadString(function(chunk, env)
+        local func = loadstring(chunk)
+        if func == nil then
+            return nil
+        end
+
+        setfenv(func, env)
+        return func
+    end)
 ```
