@@ -1,8 +1,13 @@
 name: test-and-publish
-on: [push, pull_request]
+on: 
+  push:
+    branches: 
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
 
 jobs:
-  # TODO: Tests don't seem to run for 5.1 and 5.2 due to some weirdness...
   tests-51:
     uses: ./.github/workflows/run-tests.yml
     with:
@@ -36,7 +41,21 @@ jobs:
       - name: Install dkjson
         run: |
           luarocks install dkjson
-      - name: Publish to LuaRocks
+      - name: Publish dev version to LuaRocks
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Extract version from tag
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        id: extract-version
+        run: |
+          echo "VERSION=$(echo ${{ github.ref_name }} | cut -c 2-)" >> "$GITHUB_OUTPUT"
+      - name: Fail run if there's no valid rockspec
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && hashFiles(format('lazylualinq-{0}.rockspec', steps.extract-version.outputs.VERSION)) == '' }}
+        run: |
+          exit 1
+      - name: Publish release version to LuaRocks
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          luarocks upload lazylualinq-${{ steps.extract-version.outputs.VERSION }}.rockspec --api-key=${{ secrets.LUAROCKS_API_KEY }}
+
