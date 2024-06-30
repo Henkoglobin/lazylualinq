@@ -1,6 +1,4 @@
-local helpers = require("test._helpers")
-
-describe("#configuration function withLambdaEnv", function()
+describe("configuration function #withLambdaEnv", function()
 	it("allows access to the global environment if not called", function()
 		local linq = require("lazylualinq")
 		local func = linq.lambda("os")

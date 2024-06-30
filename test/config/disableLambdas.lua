@@ -1,4 +1,4 @@
-describe("#configuration function disableLambdas", function()
+describe("configuration function #disableLambdas", function()
 	it("disallows the use of lambdas", function()
 		local linq = require("lazylualinq").disableLambdas()
 		local seq = linq {1, 2, 3}
