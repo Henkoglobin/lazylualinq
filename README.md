@@ -309,7 +309,7 @@ end
 -- 5
 ```
 
-## String Lambdas
+# String Lambdas
 
 LazyLuaLinq supports string lambdas as a short-hand form of anonymous functions. Whenever a function accepts a function (e.g. a predicate or a transformation), you may also pass a string instead. For example, the following two snippets are functionally identical:
 
@@ -343,7 +343,7 @@ local timesTwo = linq.lambda("v => v * 2")
 -- local function timesTwo(v) return v * 2 end
 ```
 
-## Module Configuration
+# Module Configuration
 
 There are various functions that can be called directly on the `linq` module in order to configure the way it works.
 As of today, all available configuration functions are used to increase the safety of [String Lambdas](string-lambdas).
@@ -353,7 +353,7 @@ As of today, all available configuration functions are used to increase the safe
 > when `require`-ing it multiple times. Thus, you cannot (currently) have multiple `linq` instances with different
 > behaviors.
 
-### `disableLambdas`
+## `disableLambdas`
 
 Fully disables lambdas globally. Please note that this also disables the use of `linq.lambda` from your own code, though
 this may change in the future.
@@ -364,7 +364,7 @@ local linq = require("lazylualinq").disableLambdas()
 linq { 1, 2, 3 }:select("v => v * 2") -- error: Lambdas have been disabled
 ```
 
-### `withLambdaEnv`
+## `withLambdaEnv`
 
 Sets an environment to use whenever a lambda is created. Note that this environment will also be used when calling 
 `linq.lambda` from your own code, though this may change in the future.
@@ -379,7 +379,7 @@ local func = linq.lambda("_ => os")
 print(func()) -- nil
 ```
 
-### `withLoadString`
+## `withLoadString`
 
 Sets a custom function to load a chunk from a string. The function will be called with two arguments: `chunk` and `env`.
 The provided function may perform any operation on the chunk before actually loading it. The passed `env` represents
