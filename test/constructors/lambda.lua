@@ -1,5 +1,5 @@
 describe("#lambda", function()
-	local major, minor = _VERSION:match("Lua (%d).(%d)")
+	local major, minor = _VERSION:match("Lua (%d)%.(%d)")
 	local major, minor = tonumber(major), tonumber(minor)
 	local extendedDebugInfoAvailable = major > 5 or (major == 5 and minor >= 2)
 
