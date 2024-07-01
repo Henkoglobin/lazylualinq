@@ -1,3 +1,6 @@
+# Luacov HTML coverage report
+/luacov-html/*
+
 # sandbox file
 sandbox.lua
 

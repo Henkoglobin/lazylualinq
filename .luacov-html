@@ -1,4 +1,5 @@
 return {
+    reporter = "html",
     include = {
         'linq', 
         'ordering',

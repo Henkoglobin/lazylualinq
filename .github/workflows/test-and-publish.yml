@@ -39,23 +39,24 @@ jobs:
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@v4.0.0
       - name: Install dkjson
+        # Publishing to LuaRocks requires a JSON library such as cjson, dkjson or json.
         run: |
           luarocks install dkjson
-      - name: Publish dev version to LuaRocks
+      - name: Publish scm version to LuaRocks
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          luarocks upload lazylualinq-dev-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
+          luarocks upload lazylualinq-scm-1.rockspec --force --api-key=${{ secrets.LUAROCKS_API_KEY }}
       - name: Extract version from tag
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         id: extract-version
         run: |
           echo "VERSION=$(echo ${{ github.ref_name }} | cut -c 2-)" >> "$GITHUB_OUTPUT"
       - name: Fail run if there's no valid rockspec
-        if: ${{ startsWith(github.ref, 'refs/tags/v') && hashFiles(format('lazylualinq-{0}.rockspec', steps.extract-version.outputs.VERSION)) == '' }}
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && hashFiles(format('lazylualinq-{0}-1.rockspec', steps.extract-version.outputs.VERSION)) == '' }}
         run: |
           exit 1
       - name: Publish release version to LuaRocks
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          luarocks upload lazylualinq-${{ steps.extract-version.outputs.VERSION }}.rockspec --api-key=${{ secrets.LUAROCKS_API_KEY }}
+          luarocks upload lazylualinq-${{ steps.extract-version.outputs.VERSION }}-1.rockspec --api-key=${{ secrets.LUAROCKS_API_KEY }}
 
