@@ -913,6 +913,19 @@ end
 		LINQ SCALAR FUNCTIONS
   ]]
 
+local function verify_callable(func, name)
+	if type(func) == "function" then
+		return
+	end
+
+	local mt = getmetatable(func)
+	if mt ~= nil and mt["__call"] then
+		return
+	end
+
+	error(("Parameter '%s' must be a function or lambda!"):format(name), 2)
+end
+
 function linq:aggregate(seed, selector)
 	local NULL = {}
 	if seed and not selector then
@@ -923,9 +936,7 @@ function linq:aggregate(seed, selector)
 		selector = linq.lambda(selector)
 	end
 	
-	if type(selector) ~= "function" then
-		error("Parameter 'selector' must be a function or lambda!", 2)
-	end
+	verify_callable(selector, "selector")
 	
 	local it = self()
 	repeat
@@ -935,7 +946,7 @@ function linq:aggregate(seed, selector)
 			if seed == NULL then
 				seed = value
 			else
-				seed = selector(seed, value)
+				seed = selector(seed, value, index)
 			end
 		end
 	until index == nil
@@ -1421,6 +1432,9 @@ end
 linq.map = linq.select
 linq.filter = linq.where
 linq.flatMap = linq.selectMany
+
+linq.reduce = linq.aggregate
+linq.fold = linq.aggregate
 
 -- Allow calling :pairs() as an alias to the standard library's pairs(...)
 linq.pairs = pairs

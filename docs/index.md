@@ -257,7 +257,14 @@ local seq = linq { "foo", "egg", "hello" }
 
 # Terminal Functions
 
-## `linq:aggregate(seed, selector)`
+## `linq:aggregate([seed], selector)`
+
+Starting from the `seed` value, this function calls the `selector` repeatedly, passing the current aggregation result and the current value from the sequence. 
+
+`selector` has the following signature: `function(agg, value, key)`. If no `seed` is given, `agg` is the first value of the input sequence for the first invocation of `selector`.
+
+This function is sometimes also called `reduce` (e.g. in Java Streams, JavaScript) or `fold` and can also be used as such.
+
 ## `linq:count([predicate])`
 ## `linq:sum([selector])`
 ## `linq:max([selector])`
