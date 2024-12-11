@@ -1,7 +1,5 @@
 # lazylualinq
 
-[![tests](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml/badge.svg)](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml) [![luarocks](https://img.shields.io/luarocks/v/henkoglobin/lazylualinq?style=plastic)](https://luarocks.org/modules/henkoglobin/lazylualinq)
-
 LazyLuaLinq provides a simple, _lazy_ implementation of linq-like functions for Lua. With LazyLuaLinq, you can implement data transformation in elegant, expressive _queries_ akin to SQL:
 
 ```lua
@@ -20,6 +18,8 @@ local number = from { 3, 2, 1, 0 }
 ```
 
 Without lazy evaluation, this code would result in a division by zero when calculating the last element of the sequence. Luckily, with LazyLuaLinq, this won't happen, as the second-to-last element fulfils the condition specified in the call to `first` and therefore prevents further iteration.
+
+You can get lazylualinq on [LuaRocks](https://luarocks.org/modules/henkoglobin/lazylualinq).
 
 # Overview
 
