@@ -1,6 +1,6 @@
 # lazylualinq
 
-[![tests](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml/badge.svg)](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml) [![luarocks](https://img.shields.io/luarocks/v/henkoglobin/lazylualinq?style=plastic)](https://luarocks.org/modules/henkoglobin/lazylualinq)
+[![tests](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml/badge.svg)](https://github.com/Henkoglobin/lazylualinq/actions/workflows/test-and-publish.yml) [![luarocks](https://img.shields.io/luarocks/v/henkoglobin/lazylualinq?style=plastic)](https://luarocks.org/modules/henkoglobin/lazylualinq) [![pages-build-deployment](https://github.com/Henkoglobin/lazylualinq/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://henkoglobin.github.io/lazylualinq/)
 
 LazyLuaLinq provides a simple, _lazy_ implementation of linq-like functions for Lua. With LazyLuaLinq, you can implement data transformation in elegant, expressive _queries_ akin to SQL:
 
@@ -402,3 +402,13 @@ local linq = require("lazylualinq")
         return func
     end)
 ```
+
+# Dependencies and running tests
+
+In order to develop lazylualinq, you should install the test dependencies:
+
+```bash
+sudo luarocks test --prepare
+```
+
+Then, you can run the tests using `luarocks test`.

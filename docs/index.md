@@ -238,6 +238,18 @@ local seq = linq { "a", "b", "c" }:take(2)
 ```
 
 ## `linq:zip(other, resultSelector)`
+
+`zip` combines elements from the input and the `other` list, calling `resultSelector` for each pair of values. 
+It will only iterate the input sequences as long as the _shorter_ of both sequences yields values.
+
+`resultSelector` has the following signature: `function(leftValue, leftKey, rightValue, rightKey)`.
+
+```lua
+local seq = linq { "foo", "egg", "hello" }
+    :zip(linq{ "bar", "spam" }, function(l, _, r) return l .. r end)
+-- seq is now equivalent to linq { "foobar", "eggspam" }
+```
+
 ## `linq:defaultIfEmpty(defaultValue, defaultIndex)`
 ## `linq:reindex()`
 ## `linq:nonNil()`
